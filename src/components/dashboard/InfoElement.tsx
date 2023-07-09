@@ -1,5 +1,5 @@
 "use client"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 type Props = {
   element: [string, any]
   onlyRead?: boolean
@@ -14,6 +14,10 @@ const capitalize = (str: string, splitChar: string = " ", joinChar: string = " "
 export function InfoElement({ element, onlyRead = false }: Props) {
   const [inputValue, setInputValue] = useState<string>(element[1])
   const numberTypes = ["zip", "year"]
+
+  const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+  }
 
   let title: string = ""
   let InputElement: React.ReactNode
@@ -30,7 +34,7 @@ export function InfoElement({ element, onlyRead = false }: Props) {
               checked={inputValue === "active"}
               value="active"
               disabled={onlyRead}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={handleRadioChange}
             />
             <label htmlFor="active">Active</label>
           </div>
@@ -42,9 +46,21 @@ export function InfoElement({ element, onlyRead = false }: Props) {
               checked={inputValue === "deceased"}
               value="deceased"
               disabled={onlyRead}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={handleRadioChange}
             />
             <label htmlFor="deceased">Deceased</label>
+          </div>
+          <div className="flex gap-4">
+            <input
+              type="radio"
+              name="isactive"
+              id="retired"
+              checked={inputValue === "retired"}
+              value="retired"
+              disabled={onlyRead}
+              onChange={handleRadioChange}
+            />
+            <label htmlFor="retired">Retired</label>
           </div>
         </div>
       </>

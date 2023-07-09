@@ -1,9 +1,12 @@
-import React from 'react'
+import { UserInfo } from "@/components"
+import React from "react"
 
 type Props = {}
 
-export default function UserInfo({}: Props) {
+export default function UserInfoPage({}: Props) {
   return (
-    <div>UserInfo</div>
+    <>
+      <UserInfo editAccess={false} />
+    </>
   )
 }
