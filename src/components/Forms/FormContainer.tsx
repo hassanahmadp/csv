@@ -56,24 +56,7 @@ function LoginForm({ error }: { error: string }) {
             {!showPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
           </div>
         </div>
-        {/* <div className="flex items-center justify-between">
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <input
-                  id="remember"
-                  aria-describedby="remember"
-                  type="checkbox"
-                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 "
-                  required
-                />
-              </div>
-              <div className="ml-3 text-sm">
-                <label htmlFor="remember" className="text-gray-500 ">
-                  Remember me
-                </label>
-              </div>
-            </div>
-          </div> */}
+        
         <button
           type="submit"
           className="w-full relative text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -110,7 +93,6 @@ function LoginForm({ error }: { error: string }) {
 }
 
 export function FormContainer({ variant = "login" }: Props) {
-  const { setMember } = useAuthContext()
   const { error, setError } = useError()
   const router = useRouter()
 
@@ -124,7 +106,6 @@ export function FormContainer({ variant = "login" }: Props) {
     const tempMember = dummyMembers.find(m => m.email === email)
     if (!tempMember) setError("No member found with that email address")
     else {
-      setMember(tempMember)
       if (tempMember?.password !== password) setError("The password is incorrect.")
       else {
         switch (tempMember.role) {
