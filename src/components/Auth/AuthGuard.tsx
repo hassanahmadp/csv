@@ -1,5 +1,6 @@
 "use client"
-import { useRouter, usePathname } from "next/navigation"
+import { useStorage } from "@/hooks"
+import { usePathname, useRouter } from "next/navigation"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
 type Props = {
@@ -27,28 +28,76 @@ const routes: {
 }
 
 const dummyUser: User = {
-  firstName: 'John',
-  lastName: 'Doe',
+  firstName: "John",
+  lastName: "Doe",
   email: "user@user.com",
-  password: "password",
+  password: "passworduser",
   role: "USER",
-  other: {}
+  other: {},
 }
 const dummyAdmin: Admin = {
-  firstName: 'Tom',
-  lastName: 'Wick',
+  firstName: "Tom",
+  lastName: "Wick",
   email: "admin@admin.com",
-  password: "password",
+  password: "passwordadmin",
   role: "ADMIN",
 }
 
-const dummyMembers: (User | Admin)[] = [dummyUser, dummyAdmin]
+export const dummyMembers: (User | Admin)[] = [dummyUser, dummyAdmin]
+
+export const dummyUsers: User[] = [
+  {
+    firstName: "John Smith",
+    lastName: "Doe",
+    email: "john@doe.com",
+    password: "fdjkls",
+    role: "USER",
+    other: {
+      address: "123 Main St",
+      city: "San Francisco",
+      state: "CA",
+      zip: "123",
+      home_phone: "",
+      work_phone: "",
+      department: "",
+      is_active: "active",
+      group_email: "",
+      member_role: "",
+      member_type: "",
+      year: "2014",
+    },
+  },
+  {
+    firstName: "user1 Smith",
+    lastName: "Doe",
+    email: "user1@doe.com",
+    password: "fdjkls",
+    role: "USER",
+    other: {
+      address: "123 Main St",
+      city: "San Francisco",
+      state: "CA",
+      zip: "123",
+      home_phone: "",
+      work_phone: "",
+      department: "",
+      is_active: "active",
+      group_email: "",
+      member_role: "",
+      member_type: "",
+      year: "2014",
+    },
+  },
+]
 
 export function AuthGuard({ children }: Props) {
+  // const {value: authorized, setValue: setAuthorized} = useStorage<boolean>("AUTHORIZED",false, 'session')
   const [authorized, setAuthorized] = useState<boolean>(false)
+  // const {value: member, setValue: setMember} = useStorage<User | Admin | null>("MEMBER",null, 'session')
   const [member, setMember] = useState<User | Admin | null>(null)
-  const router = useRouter()
+  const [message, setMessage] = useState<string>("Loading...")
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     const authCheck = async () => {
@@ -56,10 +105,10 @@ export function AuthGuard({ children }: Props) {
       if (!tempUser) {
         if (!routes.PUBLIC_ROUTES.includes(pathname.split("?")[0])) {
           setAuthorized(false)
-          return
+          router.push("/")
         }
       } else {
-        if(!routes[`${tempUser?.role}_ROUTES`].includes(pathname.split("?")[0])) {
+        if (!routes[`${tempUser?.role}_ROUTES`].includes(pathname.split("?")[0])) {
           setAuthorized(false)
           return
         }
@@ -67,7 +116,7 @@ export function AuthGuard({ children }: Props) {
       setAuthorized(true)
     }
     authCheck()
-  }, [member, router])
+  }, [member, pathname])
 
   return (
     <AuthContext.Provider value={{ member, setMember, authorized }}>
@@ -75,7 +124,7 @@ export function AuthGuard({ children }: Props) {
         children
       ) : (
         <div className="flex h-screen w-screen justify-center items-center">
-          <h1 className="max-w-lg font-extrabold text-6xl">Loading...</h1>
+          <h1 className="max-w-lg font-extrabold text-center text-6xl">{message}</h1>
         </div>
       )}
     </AuthContext.Provider>

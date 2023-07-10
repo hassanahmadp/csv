@@ -24,62 +24,58 @@ export function InfoElement({ element, onlyRead = false }: Props) {
   if (element[0] === "is_active") {
     title = "Active Status"
     InputElement = (
-      <>
-        <div className="flex gap-6 flex-wrap">
-          <div className="flex gap-4">
-            <input
-              type="radio"
-              name="isactive"
-              id="active"
-              checked={inputValue === "active"}
-              value="active"
-              disabled={onlyRead}
-              onChange={handleRadioChange}
-            />
-            <label htmlFor="active">Active</label>
-          </div>
-          <div className="flex gap-4">
-            <input
-              type="radio"
-              name="isactive"
-              id="deceased"
-              checked={inputValue === "deceased"}
-              value="deceased"
-              disabled={onlyRead}
-              onChange={handleRadioChange}
-            />
-            <label htmlFor="deceased">Deceased</label>
-          </div>
-          <div className="flex gap-4">
-            <input
-              type="radio"
-              name="isactive"
-              id="retired"
-              checked={inputValue === "retired"}
-              value="retired"
-              disabled={onlyRead}
-              onChange={handleRadioChange}
-            />
-            <label htmlFor="retired">Retired</label>
-          </div>
+      <div className="flex gap-6 flex-wrap">
+        <div className="flex gap-4">
+          <input
+            type="radio"
+            name="isactive"
+            id="active"
+            checked={inputValue === "active"}
+            value="active"
+            disabled={onlyRead}
+            onChange={handleRadioChange}
+          />
+          <label htmlFor="active">Active</label>
         </div>
-      </>
+        <div className="flex gap-4">
+          <input
+            type="radio"
+            name="isactive"
+            id="deceased"
+            checked={inputValue === "deceased"}
+            value="deceased"
+            disabled={onlyRead}
+            onChange={handleRadioChange}
+          />
+          <label htmlFor="deceased">Deceased</label>
+        </div>
+        <div className="flex gap-4">
+          <input
+            type="radio"
+            name="isactive"
+            id="retired"
+            checked={inputValue === "retired"}
+            value="retired"
+            disabled={onlyRead}
+            onChange={handleRadioChange}
+          />
+          <label htmlFor="retired">Retired</label>
+        </div>
+      </div>
     )
   } else {
     title = capitalize(element[0], "_", " ")
     InputElement = (
-      <>
-        <input
-          type={`${numberTypes.includes(element[0]) ? "number" : "text"}`}
-          name={element[0]}
-          id={element[0]}
-          placeholder={"Enter " + title}
-          disabled={onlyRead}
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
-        />
-      </>
+      <input
+        type={`${numberTypes.includes(element[0]) ? "number" : "text"}`}
+        name={element[0]}
+        id={element[0]}
+        placeholder={"Enter " + title}
+        disabled={onlyRead}
+        value={inputValue}
+        onChange={e => setInputValue(e.target.value)}
+        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
+      />
     )
   }
 

@@ -15,7 +15,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         {/* <AuthGuard>{children}</AuthGuard> */}
         {children}
-        <div id="editModalRoot"></div>
       </body>
     </html>
   )

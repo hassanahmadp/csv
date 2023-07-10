@@ -1,44 +1,40 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export const useStorage = <T>(key: string, defaultValue: T, storage: "local" | "session" = "local") => {
-  // Create state variable to store
-  // localStorage value in state
+export const useStorage = <T>(
+  key: string,
+  defaultValue: T,
+  storage: "local" | "session" = "local",
+) => {
   const [storageValue, setStorageValue] = useState<T>(() => {
-    try {
-      const value = storage === "session" ? sessionStorage.getItem(key) : localStorage.getItem(key)
-      // If value is already present in
-      // localStorage then return it
+    if (typeof window !== "undefined") {
+      try {
+        const value =
+          storage === "session" ? sessionStorage.getItem(key) : localStorage.getItem(key)
 
-      // Else set default value in
-      // localStorage and then return it
-      if (value) {
-        return JSON.parse(value)
-      } else {
+        if (value) {
+          return JSON.parse(value)
+        } else {
+          storage === "session"
+            ? sessionStorage.setItem(key, JSON.stringify(defaultValue))
+            : localStorage.setItem(key, JSON.stringify(defaultValue))
+          return defaultValue
+        }
+      } catch (error) {
         storage === "session"
           ? sessionStorage.setItem(key, JSON.stringify(defaultValue))
           : localStorage.setItem(key, JSON.stringify(defaultValue))
         return defaultValue
       }
-    } catch (error) {
-      storage === "session"
-        ? sessionStorage.setItem(key, JSON.stringify(defaultValue))
-        : localStorage.setItem(key, JSON.stringify(defaultValue))
-      return defaultValue
-    }
+    } else return defaultValue
   })
 
-  // this method update our localStorage and our state
-  const setLocalStorageStateValue = (valueOrFn: any) => {
-    let newValue
-    if (typeof valueOrFn === "function") {
-      const fn = valueOrFn
-      newValue = fn(storageValue)
-    } else {
-      newValue = valueOrFn
+  useEffect(() => {
+    if(typeof window !== "undefined") {
+      storage === "session"
+        ? sessionStorage.setItem(key, JSON.stringify(storageValue))
+        : localStorage.setItem(key, JSON.stringify(storageValue))
     }
-    localStorage.setItem(key, JSON.stringify(newValue))
-    setStorageValue(newValue)
-  }
-  return [storageValue, setLocalStorageStateValue]
-}
+  }, [storageValue])
 
+  return { value: storageValue, setValue: setStorageValue }
+}
