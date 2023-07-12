@@ -1,7 +1,9 @@
 "use client"
 import { useStorage } from "@/hooks"
+import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import React, { createContext, useContext, useEffect, useState } from "react"
+import { HashLoader } from "react-spinners"
 
 type Props = {
   children: React.ReactNode
@@ -22,7 +24,7 @@ const routes: {
   USER_ROUTES: string[]
   ADMIN_ROUTES: string[]
 } = {
-  PUBLIC_ROUTES: ["/"],
+  PUBLIC_ROUTES: ["/", "/sign-up"],
   USER_ROUTES: ["/dashboard"],
   ADMIN_ROUTES: ["/admin-dashboard", "/user-info"],
 }
@@ -90,13 +92,30 @@ export const dummyUsers: User[] = [
   },
 ]
 
-export function AuthGuard({ children }: Props) {
-  // const {value: authorized, setValue: setAuthorized} = useStorage<boolean>("AUTHORIZED",false, 'session')
-  const [authorized, setAuthorized] = useState<boolean>(false)
-  // const {value: member, setValue: setMember} = useStorage<User | Admin | null>("MEMBER",null, 'session')
-  const [member, setMember] = useState<User | Admin | null>(null)
-  const [message, setMessage] = useState<string>("Loading...")
+export default function AuthGuard({ children }: Props) {
+  const { value: authorized, setValue: setAuthorized } = useStorage<boolean>(
+    "AUTHORIZED",
+    false,
+    "session",
+  )
+  const { value: member, setValue: setMember } = useStorage<User | Admin | null>(
+    "MEMBER",
+    null,
+    "session",
+  )
+  const Spinner = <HashLoader
+      color={'#000'}
+      loading={true}
+      size={50}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+    />
+  const [message, setMessage] = useState<string | React.ReactNode>(
+    Spinner
+  )
+  const [authorizedLink, setAuthorizedLink] = useState<string>("")
   const pathname = usePathname()
+  
   const router = useRouter()
 
   useEffect(() => {
@@ -110,6 +129,7 @@ export function AuthGuard({ children }: Props) {
       } else {
         if (!routes[`${tempUser?.role}_ROUTES`].includes(pathname.split("?")[0])) {
           setAuthorized(false)
+          setAuthorizedLink(routes[`${tempUser?.role}_ROUTES`][0])
           return
         }
       }
@@ -118,13 +138,31 @@ export function AuthGuard({ children }: Props) {
     authCheck()
   }, [member, pathname])
 
+  useEffect(() => {
+    let t = setTimeout(() => {
+      setMessage("You are not authorized to access this page.")
+    }, 2000)
+    return () => {
+      clearTimeout(t)
+    }
+  }, [authorized])
+
   return (
     <AuthContext.Provider value={{ member, setMember, authorized }}>
       {authorized ? (
         children
       ) : (
-        <div className="flex h-screen w-screen justify-center items-center">
+        <div className="flex h-screen w-screen justify-center items-center gap-6 flex-col">
           <h1 className="max-w-lg font-extrabold text-center text-6xl">{message}</h1>
+          {typeof message === "string" && message.split(" ")[0] === "You" && (
+            <Link
+              onClick={() => setMessage(Spinner)}
+              href={authorizedLink}
+              className="p-2 border w-72 text-center bg-black hover:bg-white text-white hover:text-black"
+            >
+              Redirect to my Authorized page
+            </Link>
+          )}
         </div>
       )}
     </AuthContext.Provider>

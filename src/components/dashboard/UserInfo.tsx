@@ -77,7 +77,7 @@ export function UserInfo({editAccess}: Props) {
           type="submit"
           className="text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Submit
+          Save
         </button>}
       </form>
     </>
