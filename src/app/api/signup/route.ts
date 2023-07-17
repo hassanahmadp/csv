@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const { firstName, lastName, email, password, role } = reqBody
 
     
-    const member: User | Admin = await Members?.findOne({email})
+    const member: User | Admin = await Members.findOne({email})
 
     if (member) {
       return NextResponse.json({ error: "Member already exists" }, { status: 400 })
