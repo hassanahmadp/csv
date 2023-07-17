@@ -20,7 +20,7 @@ const dummyCompleteUserInfo: User = {
     home_phone: "",
     work_phone: "",
     department: "",
-    is_active: "active",
+    is_active: IsActive.active,
     group_email: "",
     member_role: "",
     member_type: "",
@@ -30,7 +30,10 @@ const dummyCompleteUserInfo: User = {
 
 export function UserInfo({editAccess}: Props) {
   const { other, firstName, lastName, email } = dummyCompleteUserInfo
-  const UserInfoKeyValuePair = Object.entries(other)
+  let UserInfoKeyValuePair;
+  if(other) {
+    UserInfoKeyValuePair = Object.entries(other)
+  }
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
@@ -70,7 +73,7 @@ export function UserInfo({editAccess}: Props) {
         </div>
       </div>
       <form className="container w-full mx-auto py-8 px-4" onKeyDown={keyDownHandler} onSubmit={handleSubmit}>
-        {UserInfoKeyValuePair.map(el => {
+        {UserInfoKeyValuePair?.map(el => {
           return <InfoElement key={el[0]} element={el} onlyRead={!editAccess}/>
         })}
         {editAccess && <button

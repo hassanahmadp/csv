@@ -5,14 +5,13 @@ import { dummyMembers, useAuthContext } from "../Auth"
 import { useError } from "@/hooks"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { signUp } from "@/lib"
 
 type Props = {
   variant: "login" | "sign up"
 }
 
 function LoginForm({ error }: { error: string }) {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -29,8 +28,6 @@ function LoginForm({ error }: { error: string }) {
             type="email"
             name="email"
             id="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  "
             placeholder="name@company.com"
             required
@@ -45,8 +42,6 @@ function LoginForm({ error }: { error: string }) {
             type={`${showPass ? "text" : "password"}`}
             name="password"
             id="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
             placeholder="Enter Password"
             className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
             required
@@ -70,28 +65,6 @@ function LoginForm({ error }: { error: string }) {
           Not a member?
           <Link className="font-semibold hover:underline text-blue-600" href="/sign-up">Sign Up</Link>
         </div>
-      </div>
-      <div className="absolute bottom-4 right-4 flex flex-col gap-5">
-        <button
-          type="button"
-          className="border text-black font-normal rounded-lg text-xs p-2 text-center"
-          onClick={() => {
-            setEmail("admin@admin.com")
-            setPassword("passwordadmin")
-          }}
-        >
-          Get Admin Credentials
-        </button>
-        <button
-          type="button"
-          className="border text-black font-normal rounded-lg text-xs p-2 text-center"
-          onClick={() => {
-            setEmail("user@user.com")
-            setPassword("passworduser")
-          }}
-        >
-          Get User Credentials
-        </button>
       </div>
     </div>
   )
@@ -199,7 +172,10 @@ export function FormContainer({ variant = "login" }: Props) {
 
     const target = event.target as HTMLFormElement
     const formData = new FormData(target)
-    const { email, password } = Object.fromEntries(formData.entries())
+    const obj = Object.fromEntries(formData.entries())
+    const { email, password } = obj;
+    console.log({obj});
+    
 
     const tempMember = dummyMembers.find(m => m.email === email)
     if (!tempMember) setError("No member found with that email address")
@@ -219,14 +195,21 @@ export function FormContainer({ variant = "login" }: Props) {
     }
   }
 
-  const handleSignUpSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUpSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    
 
-    const target = event.target as HTMLFormElement
-    const formData = new FormData(target)
-    const data = Object.fromEntries(formData.entries())
-
-    console.log(data)
+    try {
+      const target = event.target as HTMLFormElement
+      const formData = new FormData(target)
+      const data = Object.fromEntries(formData.entries())
+      const {firstName, lastName, email, password} = JSON.parse(JSON.stringify(data))
+      const resp = await signUp({firstName, lastName, email, password})
+      console.log({resp, data})
+      router.push('/')
+    } catch (error: any) {
+      console.log("handleSignUpSubmit >> error >> ",error)
+    }
   }
 
   return (

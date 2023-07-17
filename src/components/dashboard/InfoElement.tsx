@@ -5,7 +5,7 @@ type Props = {
   onlyRead?: boolean
 }
 
-const capitalize = (str: string, splitChar: string = " ", joinChar: string = " ") =>
+export const capitalize = (str: string, splitChar: string = " ", joinChar: string = " ") =>
   str
     .split(splitChar)
     .map(word => `${word.slice(0, 1).toUpperCase()}${word.slice(1).toLowerCase()}`)
