@@ -6,6 +6,12 @@ type Props = {
   editAccess: boolean
 }
 
+const IsActive = {
+  active: "active",
+  inactive: "inactive",
+  retired: "retired",
+} as const
+
 const dummyCompleteUserInfo: User = {
   firstName: "John Smith",
   lastName: "Doe",

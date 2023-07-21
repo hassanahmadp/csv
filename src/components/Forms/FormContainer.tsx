@@ -1,11 +1,12 @@
 "use client"
 import React, { useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
-import { dummyMembers, useAuthContext } from "../Auth"
 import { useError } from "@/hooks"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { signUp } from "@/lib"
+import { logIn, signUp } from "@/lib"
+import Members from "@/models/member"
+import toast from 'react-hot-toast'
 
 type Props = {
   variant: "login" | "sign up"
@@ -63,7 +64,9 @@ function LoginForm({ error }: { error: string }) {
 
         <div className="flex gap-2 justify-center text-xs mt-4">
           Not a member?
-          <Link className="font-semibold hover:underline text-blue-600" href="/sign-up">Sign Up</Link>
+          <Link className="font-semibold hover:underline text-blue-600" href="/sign-up">
+            Sign Up
+          </Link>
         </div>
       </div>
     </div>
@@ -71,7 +74,6 @@ function LoginForm({ error }: { error: string }) {
 }
 
 function SignUpForm({ error }: { error: string }) {
-  
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -165,50 +167,62 @@ function SignUpForm({ error }: { error: string }) {
 export function FormContainer({ variant = "login" }: Props) {
   const { error, setError } = useError()
   const router = useRouter()
-  const { setMember } = useAuthContext()
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const target = event.target as HTMLFormElement
-    const formData = new FormData(target)
-    const obj = Object.fromEntries(formData.entries())
-    const { email, password } = obj;
-    console.log({obj});
-    
-
-    const tempMember = dummyMembers.find(m => m.email === email)
-    if (!tempMember) setError("No member found with that email address")
-    else {
-      if (tempMember?.password !== password) setError("The password is incorrect.")
-      else {
-        setMember(tempMember)
-        switch (tempMember.role) {
-          case "ADMIN":
-            router.push("/admin-dashboard")
-            break
-          case "USER":
-            router.push("/dashboard")
-            break
+    try {
+      
+      const target = event.target as HTMLFormElement
+      const formData = new FormData(target)
+      const obj: { [key: string]: string  } = {}
+      formData.forEach((value, key) => {
+        if (value instanceof File) {
+        } else {
+          obj[key] = value.toString()
         }
-      }
+      })
+  
+      const { email, password } = obj
+  
+      const response:any = await logIn({email,password})
+      
+      
+
+      // // @ts-ignore
+      // const tempMember: User | Admin = await Members.findOne({ email })
+  
+      // if (!tempMember?.email && !tempMember.password) setError(tempMember?.error || "")
+      // else {
+      //   setMember(tempMember)
+        // switch (role) {
+        //   case "ADMIN":
+        //     router.push("/admin-dashboard")
+        //     break
+        //   case "USER":
+        //     router.push("/dashboard")
+        //     break
+        // }
+      // }
+    } catch (error:any) {
+      console.error({error:error.message})
+      toast.error(error.message)
     }
   }
 
   const handleSignUpSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    
 
     try {
       const target = event.target as HTMLFormElement
       const formData = new FormData(target)
       const data = Object.fromEntries(formData.entries())
-      const {firstName, lastName, email, password} = JSON.parse(JSON.stringify(data))
-      const resp = await signUp({firstName, lastName, email, password})
-      console.log({resp, data})
-      router.push('/')
+      const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
+      const resp = await signUp({ firstName, lastName, email, password })
+      console.log({ resp, data })
+      router.push("/")
     } catch (error: any) {
-      console.log("handleSignUpSubmit >> error >> ",error)
+      console.log("handleSignUpSubmit >> error >> ", error)
     }
   }
 

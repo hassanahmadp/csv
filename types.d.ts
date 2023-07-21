@@ -1,8 +1,10 @@
 interface Person {
+  _id?: string | number;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  error?: string;
 }
 
 enum memberRoles {
@@ -18,11 +20,11 @@ interface User extends Person {
   other?: OtherUserInfo
 }
 
-enum IsActive {
-  "active"="active",
-  "inactive"="inactive",
-  "retired"="retired"
-}
+const IsActive = {
+  "active":"active",
+  "inactive":"inactive",
+  "retired":"retired"
+} as const
 
 interface OtherUserInfo {
   address?: string

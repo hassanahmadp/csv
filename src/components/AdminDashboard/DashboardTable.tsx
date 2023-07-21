@@ -17,7 +17,7 @@ export const MemberRow = ({ member, idx }: { member: User, idx: number }) => {
     department,
     city,
     address,
-  } = other
+  } = other as OtherUserInfo
 
   const evenOddClassesHandler = ():string => {
     if(idx % 2 === 0) return "bg-white border-b"

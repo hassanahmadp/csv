@@ -103,19 +103,19 @@ export default function AuthGuard({ children }: Props) {
     null,
     "session",
   )
-  const Spinner = <HashLoader
-      color={'#000'}
+  const Spinner = (
+    <HashLoader
+      color={"#000"}
       loading={true}
       size={50}
       aria-label="Loading Spinner"
       data-testid="loader"
     />
-  const [message, setMessage] = useState<string | React.ReactNode>(
-    Spinner
   )
+  const [message, setMessage] = useState<string | React.ReactNode>(Spinner)
   const [authorizedLink, setAuthorizedLink] = useState<string>("")
   const pathname = usePathname()
-  
+
   const router = useRouter()
 
   useEffect(() => {
