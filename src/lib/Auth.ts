@@ -15,7 +15,7 @@ export async function signUp(data: SignUpProps) {
     const signupResponse = await axios.post('/api/signup', data)
     return signupResponse
   } catch (error:any) {
-    console.log(error.message)
+    console.error({error:error.message})
   }
 }
 export async function logIn(data: LogInProps) {
@@ -23,7 +23,7 @@ export async function logIn(data: LogInProps) {
     const loginResponse = await axios.post('/api/login', data)
     return loginResponse
   } catch (error:any) {
-    console.log(error.message)
+    console.error({error:error.message})
   }
 }
 

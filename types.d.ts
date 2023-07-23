@@ -39,7 +39,7 @@ interface OtherUserInfo {
   group_email?: string
   member_role?: string
   member_type?: string
-  premium?: boolean
+  premium?: string
   year?: string
 }
 

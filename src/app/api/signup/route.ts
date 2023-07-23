@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         member_role: '',
         member_type: '',
         year: '',
-        premium: false
+        premium: 'true'
       }
     })
 

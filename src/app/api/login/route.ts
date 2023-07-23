@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
     const reqBody: User | Admin = await request.json()
     const {email, password} = reqBody
     
-    console.log("Login",{reqBody})
 
     // @ts-ignore
     const member: User | Admin = await Members.findOne({email})

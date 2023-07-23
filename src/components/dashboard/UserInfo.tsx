@@ -71,7 +71,6 @@ export function UserInfo({variant='current', userId}: Props) {
     member_role: currentUser?.other?.member_role,
     member_type: currentUser?.other?.member_type,
     year: currentUser?.other?.year,
-
   })
   return (
     <>

@@ -11,7 +11,7 @@ export const capitalize = (str: string, splitChar: string = " ", joinChar: strin
     .join(joinChar)
 
 export function InfoElement({ element }: Props) {
-  const [inputValue, setInputValue] = useState<string | boolean>(element[1])
+  const [inputValue, setInputValue] = useState<string>(element[1])
   const numberTypes = ["zip", "year"]
 
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,13 +63,16 @@ export function InfoElement({ element }: Props) {
     title = "Is Premium User?"
     InputElement = (
       <div className="flex gap-4">
+        <input type="text" hidden name="premium" value={inputValue}/>
         <input
           type="checkbox"
-          name="premium"
           id="premium"
-          defaultChecked={!!inputValue}
-          value="premium"
-          // onChange={(e) => setInputValue(e.target.checked)}
+          checked={inputValue === 'true'}
+          value={`${inputValue === 'true'}`}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const checkedValue = `${e.target.checked}`
+            setInputValue(checkedValue)
+          }}
         />
         <label htmlFor="premium">Premium</label>
       </div>

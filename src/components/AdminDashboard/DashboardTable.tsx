@@ -4,7 +4,9 @@ import { getAllUsers } from "@/lib"
 import Link from "next/link"
 import { HashLoader } from "react-spinners"
 
-type Props = {}
+type Props = {
+  showModal?: boolean
+}
 
 const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
   const { firstName, lastName, email, role, other } = member
@@ -20,7 +22,7 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
         {`${firstName} ${lastName}`}
       </th>
       <td className="px-6 py-4">{email && email}</td>
-      <td className="px-6 py-4">{other?.premium && other.premium}</td>
+      <td className="px-6 py-4">{other?.hasOwnProperty('premium') && `${other.premium}`}</td>
       <td className="px-6 py-4">{other?.address && other.address}</td>
       <td className="px-6 py-4">{other?.city && other?.city}</td>
       <td className="px-6 py-4">{other?.state && other?.state}</td>
@@ -46,7 +48,7 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
   )
 }
 
-export function DashboardTable({}: Props) {
+export function DashboardTable({showModal}: Props) {
   const [allUsers, setAllUsers] = useState<User[] | undefined>([])
 
   useEffect(() => {
@@ -54,8 +56,10 @@ export function DashboardTable({}: Props) {
       const users = await getAllUsers()
       setAllUsers(users)
     }
-    getUsers()
-  }, [])
+    if(!showModal) {
+      getUsers()
+    }
+  }, [showModal])
 
   // const allUsers = await getAllUsers()
   if (allUsers) {
@@ -71,7 +75,7 @@ export function DashboardTable({}: Props) {
                 Email
               </th>
               <th scope="col" className="px-6 py-3">
-                Premium User
+                Premium User 
               </th>
               <th scope="col" className="px-6 py-3">
                 Address

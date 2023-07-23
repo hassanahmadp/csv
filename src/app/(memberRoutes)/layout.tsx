@@ -13,11 +13,11 @@ export default function layout({ children }: Props) {
   
   const logoutHandler = async () => {
     try {
-      const res: any = await logout()
+      await logout()
       push('/')
       toast.success("Logout Successful")
     } catch (error:any) {
-      console.log({error: error.message})
+      console.error({error: error.message})
       toast.error("Logout Failed")
     }
   }

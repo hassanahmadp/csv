@@ -35,7 +35,10 @@ const otherUserInfoSchema = new mongoose.Schema<OtherUserInfo>(
     group_email: String,
     member_role: String,
     member_type: String,
-    premium: Boolean,
+    premium: {
+      type: String,
+      required: [true, 'Please confirm if the User is a Premium member or not.']
+    },
     year: String,
   },
   { timestamps: true },

@@ -4,18 +4,17 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { logIn, signUp } from "@/lib"
-import Members from "@/models/member"
-import toast from 'react-hot-toast'
-import { NextResponse } from "next/server"
+import toast from "react-hot-toast"
 
 type Props = {
-  variant: "login" | "sign up",
-  through?: 'route' | "modal"
+  variant: "login" | "sign up" | "set pass" | "change pass"
+  through?: "route" | "modal"
+  setShowModal?: any
 }
 
 function LoginForm() {
   const [showPass, setShowPass] = useState<boolean>(false)
-  
+
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
@@ -74,7 +73,7 @@ function LoginForm() {
   )
 }
 
-function SignUpForm() {
+export function SignUpForm({ through }: { through?: "route" | "modal" }) {
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -149,52 +148,178 @@ function SignUpForm() {
           Sign Up
         </button>
 
-        <div className="flex gap-2 justify-center text-xs mt-4">
-          Already a member?
-          <Link className="font-semibold hover:underline text-blue-600" href="/">
-            Sign In
-          </Link>
+        {through === "route" && (
+          <div className="flex gap-2 justify-center text-xs mt-4">
+            Already a member?
+            <Link className="font-semibold hover:underline text-blue-600" href="/">
+              Sign In
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+export function SetPasswordForm({ through }: { through?: "route" | "modal" }) {
+  const [showPass, setShowPass] = useState<boolean>(false)
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+        Set Password
+      </h1>
+      <div className="space-y-4 md:space-y-6">
+        <div className=" relative mt-4">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
+            Password
+          </label>
+          <input
+            type={`${showPass ? "text" : "password"}`}
+            name="password"
+            id="password"
+            placeholder="Enter Password"
+            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+            required
+          />
+          <div
+            className="absolute bottom-0 flex justify-center items-center h-10 w-10 right-0 opacity-30"
+            onClick={() => setShowPass(prev => !prev)}
+          >
+            {!showPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
+          </div>
         </div>
+
+        <button
+          type="submit"
+          className="w-full relative text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Set Password
+        </button>
+      </div>
+    </div>
+  )
+}
+export function ChangePasswordForm({ through }: { through?: "route" | "modal" }) {
+  const [showPass, setShowPass] = useState<{
+    oldPass: boolean
+    newPass: boolean
+    confirmNewPass: boolean
+  }>({
+    oldPass: false,
+    newPass: false,
+    confirmNewPass: false,
+  })
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+        Change Password
+      </h1>
+      <div className="space-y-4 md:space-y-6">
+        <div className="relative mt-4">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
+            Old Password
+          </label>
+          <input
+            type={`${showPass.oldPass ? "text" : "password"}`}
+            name="oldPassword"
+            id="oldPassword"
+            placeholder="Enter Old Password"
+            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+            required
+          />
+          <div
+            className="absolute bottom-0 flex justify-center items-center h-10 w-10 right-0 opacity-30"
+            onClick={() => setShowPass(prev => ({ ...prev, oldPass: !prev.oldPass }))}
+          >
+            {!showPass.oldPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
+          </div>
+        </div>
+        <div className="relative">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
+            New Password
+          </label>
+          <input
+            type={`${showPass.newPass ? "text" : "password"}`}
+            name="newPassword"
+            id="newPassword"
+            placeholder="Enter New Password"
+            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+            required
+          />
+          <div
+            className="absolute bottom-0 flex justify-center items-center h-10 w-10 right-0 opacity-30"
+            onClick={() => setShowPass(prev => ({ ...prev, newPass: !prev.newPass }))}
+          >
+            {!showPass.newPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
+          </div>
+        </div>
+        <div className="relative">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
+            Confirm New Password
+          </label>
+          <input
+            type={`${showPass.confirmNewPass ? "text" : "password"}`}
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="Enter New Password Again"
+            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+            required
+          />
+          <div
+            className="absolute bottom-0 flex justify-center items-center h-10 w-10 right-0 opacity-30"
+            onClick={() => setShowPass(prev => ({ ...prev, confirmNewPass: !prev.confirmNewPass }))}
+          >
+            {!showPass.confirmNewPass ? (
+              <AiFillEye fontSize="22" />
+            ) : (
+              <AiFillEyeInvisible fontSize="22" />
+            )}
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full relative text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Change Password
+        </button>
       </div>
     </div>
   )
 }
 
-export function FormContainer({ variant = "login", through="route" }: Props) {
-  const [ error, setError ] = useState("")
+export function FormContainer({ variant = "login", through = "route", setShowModal }: Props) {
+  const [error, setError] = useState("")
   const router = useRouter()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
-      
       const target = event.target as HTMLFormElement
       const formData = new FormData(target)
-      const obj: { [key: string]: string  } = {}
+      const obj: { [key: string]: string } = {}
       formData.forEach((value, key) => {
         if (value instanceof File) {
         } else {
           obj[key] = value.toString()
         }
       })
-  
+
       const { email, password } = obj
-  
-      const response:any = await logIn({email,password})
-      
-      if(!response) {
+
+      const response: any = await logIn({ email, password })
+
+      if (!response) {
         setError("Invalid Email or Password")
       } else {
         toast.success("Login Successful!")
-        if(response?.data?.role === 'ADMIN') router.push('/admin-dashboard')
-        else if(response?.data?.role === "USER") router.push('/dashboard')
+        if (response?.data?.role === "ADMIN") router.push("/admin-dashboard")
+        else if (response?.data?.role === "USER") router.push("/dashboard")
         else {
         }
       }
-
-    } catch (error:any) {
-      console.error({error:error.message})
+    } catch (error: any) {
+      console.error({ error: error.message })
       toast.error(error.message)
     }
   }
@@ -207,27 +332,75 @@ export function FormContainer({ variant = "login", through="route" }: Props) {
       const formData = new FormData(target)
       const data = Object.fromEntries(formData.entries())
       const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
-      const resp = await signUp({ firstName, lastName, email, password })
-      console.log({ resp, data })
-      toast.success("Signup Successful. Now login!")
-      router.push("/")
+      await signUp({ firstName, lastName, email, password })
+      toast.success("Signup Successful.")
+      through === "route" && router.push("/")
+      through === "modal" && setShowModal(false)
     } catch (error: any) {
-      console.log("handleSignUpSubmit >> error >> ", error)
+      console.error({ error: error.message })
+    }
+  }
+  const handleSetPassSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      const target = event.target as HTMLFormElement
+      const formData = new FormData(target)
+      const data = Object.fromEntries(formData.entries())
+      // const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
+      // await signUp({ firstName, lastName, email, password })
+      // toast.success("Signup Successful.")
+      // through === "route" && router.push("/")
+      // through === "modal" && setShowModal(false)
+      console.log({data})
+    } catch (error: any) {
+      console.error({ error: error.message })
+    }
+  }
+  const handleChangePassSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      const target = event.target as HTMLFormElement
+      const formData = new FormData(target)
+      const data = Object.fromEntries(formData.entries())
+      // const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
+      // await signUp({ firstName, lastName, email, password })
+      // toast.success("Signup Successful.")
+      // through === "route" && router.push("/")
+      // through === "modal" && setShowModal(false)
+      console.log({data})
+    } catch (error: any) {
+      console.error({ error: error.message })
     }
   }
 
   useEffect(() => {
-    if(error) toast.error(error)
+    if (error) toast.error(error)
   }, [error])
-  
 
   return (
     <form
-      onSubmit={variant === "login" ? handleSubmit : handleSignUpSubmit}
+      onSubmit={
+        variant === "login"
+          ? handleSubmit
+          : variant === "sign up"
+          ? handleSignUpSubmit
+          : variant === "set pass"
+          ? handleSetPassSubmit
+          : variant === "change pass"
+          ? handleChangePassSubmit
+          : e => {
+              e.preventDefault()
+              console.error({ error: `${variant} type of form not available` })
+            }
+      }
       className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 "
     >
-      {variant === "login" && <LoginForm/>}
-      {variant === "sign up" && <SignUpForm/>}
+      {variant === "login" && <LoginForm />}
+      {variant === "sign up" && <SignUpForm through={through} />}
+      {variant === "set pass" && <SetPasswordForm through={through}/>}
+      {variant === "change pass" && <ChangePasswordForm through={through}/>}
     </form>
   )
 }
