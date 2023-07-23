@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
   const isPublicPath = ["/", "/sign-up"].includes(path)
 
-  const isAdminPath = ['/admin-dashboard', '/user-info'].includes(path)
+  const isAdminPath = ['/admin-dashboard', '/admin-dashboard/:path*'].includes(path)
   const isUserPath = ['/dashboard'].includes(path)
 
   const token = request.cookies.get("token")?.value || ""
@@ -44,5 +44,5 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/", "/sign-up", "/admin-dashboard", "/dashboard", "/user-info"],
+  matcher: ["/", "/sign-up", "/admin-dashboard", "/dashboard", "/admin-dashboard/:path*"],
 }

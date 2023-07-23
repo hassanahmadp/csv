@@ -1,11 +1,4 @@
-import mongoose, {
-  Document,
-  FilterQuery,
-  Model,
-  ProjectionType,
-  Query,
-  QueryOptions,
-} from "mongoose"
+import mongoose from "mongoose"
 
 const IsActive = {
   active: "active",
@@ -42,6 +35,7 @@ const otherUserInfoSchema = new mongoose.Schema<OtherUserInfo>(
     group_email: String,
     member_role: String,
     member_type: String,
+    premium: Boolean,
     year: String,
   },
   { timestamps: true },

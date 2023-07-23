@@ -1,22 +1,23 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
-import { useError } from "@/hooks"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { logIn, signUp } from "@/lib"
 import Members from "@/models/member"
 import toast from 'react-hot-toast'
+import { NextResponse } from "next/server"
 
 type Props = {
-  variant: "login" | "sign up"
+  variant: "login" | "sign up",
+  through?: 'route' | "modal"
 }
 
-function LoginForm({ error }: { error: string }) {
+function LoginForm() {
   const [showPass, setShowPass] = useState<boolean>(false)
+  
   return (
     <div className="p-6">
-      {error && <span className="text-red-700 font-semibold text-xs mt-4">{error}</span>}
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
         Sign in to your account
       </h1>
@@ -73,7 +74,7 @@ function LoginForm({ error }: { error: string }) {
   )
 }
 
-function SignUpForm({ error }: { error: string }) {
+function SignUpForm() {
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -145,11 +146,6 @@ function SignUpForm({ error }: { error: string }) {
           type="submit"
           className="w-full relative text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          {error && (
-            <span className="text-red-700 absolute top-[calc(100%-0.6rem)] left-0 font-semibold text-xs mt-4">
-              {error}
-            </span>
-          )}
           Sign Up
         </button>
 
@@ -164,8 +160,8 @@ function SignUpForm({ error }: { error: string }) {
   )
 }
 
-export function FormContainer({ variant = "login" }: Props) {
-  const { error, setError } = useError()
+export function FormContainer({ variant = "login", through="route" }: Props) {
+  const [ error, setError ] = useState("")
   const router = useRouter()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -187,23 +183,16 @@ export function FormContainer({ variant = "login" }: Props) {
   
       const response:any = await logIn({email,password})
       
-      
+      if(!response) {
+        setError("Invalid Email or Password")
+      } else {
+        toast.success("Login Successful!")
+        if(response?.data?.role === 'ADMIN') router.push('/admin-dashboard')
+        else if(response?.data?.role === "USER") router.push('/dashboard')
+        else {
+        }
+      }
 
-      // // @ts-ignore
-      // const tempMember: User | Admin = await Members.findOne({ email })
-  
-      // if (!tempMember?.email && !tempMember.password) setError(tempMember?.error || "")
-      // else {
-      //   setMember(tempMember)
-        // switch (role) {
-        //   case "ADMIN":
-        //     router.push("/admin-dashboard")
-        //     break
-        //   case "USER":
-        //     router.push("/dashboard")
-        //     break
-        // }
-      // }
     } catch (error:any) {
       console.error({error:error.message})
       toast.error(error.message)
@@ -220,19 +209,25 @@ export function FormContainer({ variant = "login" }: Props) {
       const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
       const resp = await signUp({ firstName, lastName, email, password })
       console.log({ resp, data })
+      toast.success("Signup Successful. Now login!")
       router.push("/")
     } catch (error: any) {
       console.log("handleSignUpSubmit >> error >> ", error)
     }
   }
 
+  useEffect(() => {
+    if(error) toast.error(error)
+  }, [error])
+  
+
   return (
     <form
       onSubmit={variant === "login" ? handleSubmit : handleSignUpSubmit}
       className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 "
     >
-      {variant === "login" && <LoginForm error={error} />}
-      {variant === "sign up" && <SignUpForm error={error} />}
+      {variant === "login" && <LoginForm/>}
+      {variant === "sign up" && <SignUpForm/>}
     </form>
   )
 }

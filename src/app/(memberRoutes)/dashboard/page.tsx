@@ -6,7 +6,7 @@ type Props = {}
 export default function Dashboard({}: Props) {
   return (
     <main>
-      <UserInfo editAccess={true} />
+      <UserInfo variant="current"/>
     </main>
   )
 }

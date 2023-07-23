@@ -1,4 +1,4 @@
-import { DashboardTable, dummyMembers } from "@/components"
+import { DashboardTable } from "@/components"
 import React from "react"
 
 type Props = {}
@@ -20,6 +20,12 @@ export default function AdminDashboard({}: Props) {
           className="border bg-white hover:bg-black text-black hover:text-white font-normal rounded-sm text-md p-2 text-center"
         >
           Export CSV
+        </button>
+        <button
+          type="button"
+          className="border hover:bg-white bg-black hover:text-black text-white font-normal rounded-sm text-md p-2 text-center"
+        >
+          Add a new User
         </button>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

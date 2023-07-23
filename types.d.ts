@@ -1,4 +1,5 @@
 interface Person {
+  __v?: any
   _id?: string | number;
   firstName: string;
   lastName: string;
@@ -34,9 +35,17 @@ interface OtherUserInfo {
   home_phone?: string
   work_phone?: string
   department?: string
-  is_active?: IsActive
+  is_active?: "active" | 'deceased' | 'retired' 
   group_email?: string
   member_role?: string
   member_type?: string
+  premium?: boolean
   year?: string
+}
+
+interface Token {
+  id: string | number | undefined,
+  name: string
+  email: string
+  role: "USER" | "ADMIN"
 }

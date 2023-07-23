@@ -7,11 +7,11 @@ connect()
 
 export async function POST(request: NextRequest) {
   try {
-    const reqBody: User | Admin = await request.json()
-    const { firstName, lastName, email, password, role } = reqBody
+    const reqBody: User = await request.json()
+    const { firstName, lastName, email, password } = reqBody
 
     // @ts-ignore
-    const member: User | Admin = await members.findOne({email})
+    const member: User = await members.findOne({email})
 
     if (member) {
       return NextResponse.json({ error: "Member already exists" }, { status: 400 })
@@ -20,12 +20,27 @@ export async function POST(request: NextRequest) {
     const salt = await bcryptjs.genSalt(10)
     const hashedPassword = await bcryptjs.hash(password,salt)
 
-    const newMember = new members({
+    const newMember = new members<User>({
       firstName,
       lastName,
       email,
       password: hashedPassword,
-      role: "USER"
+      role: "USER",
+      other: {
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
+        home_phone: '',
+        work_phone: '',
+        department: '',
+        is_active: 'active',
+        group_email: '',
+        member_role: '',
+        member_type: '',
+        year: '',
+        premium: false
+      }
     })
 
     const savedMember = await newMember.save()

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // create token data
-    const tokenData = {
+    const tokenData: Token = {
       id: member._id,
       name: `${member.firstName} ${member.lastName}`,
       email: member.email,
@@ -42,13 +42,13 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       message: "Login Successful",
       success: true,
+      role: member.role
     })
 
     response.cookies.set('token', token, {
       httpOnly: true,
     })
 
-    console.log("thisistheresponseoflogin", {response})
     return response
     
   } catch (error: any) {
