@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { logIn, signUp } from "@/lib"
+import { logIn, setPasswordOfUser, signUp } from "@/lib"
 import toast from "react-hot-toast"
 
 type Props = {
   variant: "login" | "sign up" | "set pass" | "change pass"
   through?: "route" | "modal"
   setShowModal?: any
+  userId?: string | number
 }
 
 function LoginForm() {
@@ -202,11 +203,9 @@ export function ChangePasswordForm({ through }: { through?: "route" | "modal" })
   const [showPass, setShowPass] = useState<{
     oldPass: boolean
     newPass: boolean
-    confirmNewPass: boolean
   }>({
     oldPass: false,
     newPass: false,
-    confirmNewPass: false,
   })
   return (
     <div className="p-6">
@@ -252,7 +251,7 @@ export function ChangePasswordForm({ through }: { through?: "route" | "modal" })
             {!showPass.newPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
           </div>
         </div>
-        <div className="relative">
+        {/* <div className="relative">
           <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
             Confirm New Password
           </label>
@@ -274,7 +273,7 @@ export function ChangePasswordForm({ through }: { through?: "route" | "modal" })
               <AiFillEyeInvisible fontSize="22" />
             )}
           </div>
-        </div>
+        </div> */}
 
         <button
           type="submit"
@@ -287,7 +286,12 @@ export function ChangePasswordForm({ through }: { through?: "route" | "modal" })
   )
 }
 
-export function FormContainer({ variant = "login", through = "route", setShowModal }: Props) {
+export function FormContainer({
+  variant = "login",
+  through = "route",
+  setShowModal,
+  userId,
+}: Props) {
   const [error, setError] = useState("")
   const router = useRouter()
 
@@ -346,13 +350,23 @@ export function FormContainer({ variant = "login", through = "route", setShowMod
     try {
       const target = event.target as HTMLFormElement
       const formData = new FormData(target)
-      const data = Object.fromEntries(formData.entries())
-      // const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
+      const formDataValues = Object.fromEntries(formData.entries())
+      const data = JSON.parse(JSON.stringify(formDataValues))
+      console.log(userId)
+
       // await signUp({ firstName, lastName, email, password })
       // toast.success("Signup Successful.")
       // through === "route" && router.push("/")
       // through === "modal" && setShowModal(false)
-      console.log({data})
+      //
+      //
+      const response = await setPasswordOfUser(`${userId}`, data)
+      if(response?.data.success) {
+        toast.success('Password has been set successfully.')
+        setShowModal(false)
+      } else {
+        toast.error('There is some issue in setting the password')
+      }
     } catch (error: any) {
       console.error({ error: error.message })
     }
@@ -364,12 +378,19 @@ export function FormContainer({ variant = "login", through = "route", setShowMod
       const target = event.target as HTMLFormElement
       const formData = new FormData(target)
       const data = Object.fromEntries(formData.entries())
-      // const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
+
+      const { oldPassword, newPassword } = JSON.parse(JSON.stringify(data))
+
+      // if(through === 'modal') {
+      //   const user = await getUser(`${userId || ""}`)
+      //   debugger
+      // }
+
       // await signUp({ firstName, lastName, email, password })
       // toast.success("Signup Successful.")
       // through === "route" && router.push("/")
       // through === "modal" && setShowModal(false)
-      console.log({data})
+      console.log({ oldPassword, newPassword })
     } catch (error: any) {
       console.error({ error: error.message })
     }
@@ -399,8 +420,8 @@ export function FormContainer({ variant = "login", through = "route", setShowMod
     >
       {variant === "login" && <LoginForm />}
       {variant === "sign up" && <SignUpForm through={through} />}
-      {variant === "set pass" && <SetPasswordForm through={through}/>}
-      {variant === "change pass" && <ChangePasswordForm through={through}/>}
+      {variant === "set pass" && <SetPasswordForm through={through} />}
+      {variant === "change pass" && <ChangePasswordForm through={through} />}
     </form>
   )
 }

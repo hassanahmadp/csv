@@ -26,12 +26,24 @@ export async function logIn(data: LogInProps) {
     console.error({error:error.message})
   }
 }
+export async function setPasswordOfUser(id:string, data: {password: string}) {
+  try {
+    const loginResponse = await axios.patch(`/api/setpassword/${id}`, data)
+    return loginResponse
+  } catch (error:any) {
+    console.error({error:error.message})
+  }
+}
+
+
 
 export async function logout() {
   try {
     const logoutResponse = await axios.get('/api/logout')
     return logoutResponse
   } catch (error: any) {
+    console.error({error:error.message})
     
   }
 }
+

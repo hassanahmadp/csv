@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get('token')?.value || ""
     const {email} : Token = await getDataFromToken(token)
-    const user = await Members.findOne({email}).select("-password")
+    const user = await Members.findOne({email})
     return NextResponse.json({ user, success: true }, { status: 200 })
     
     // const users: any = await members.find({ role: "USER" })

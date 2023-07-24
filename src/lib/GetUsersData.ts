@@ -18,7 +18,7 @@ export async function getAllUsers() {
 
 export async function getCurrentUser() {
   try {
-    const {data:{user}} = await axios<{user: User, success: boolean}>('/api/users/me')
+    const {data:{user}} = await axios<{user: User , success: boolean}>('/api/users/me')
     return user
   } catch (error: any) {
     console.error({ error: error.message })

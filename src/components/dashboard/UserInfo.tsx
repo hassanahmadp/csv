@@ -1,22 +1,23 @@
 "use client"
-import { InfoElement } from "@/components"
+import { FormContainer, InfoElement, Modal } from "@/components"
 import { getCurrentUser, getUser, updateUserData } from "@/lib"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import Loader from "../Loader"
+import { createPortal } from "react-dom"
+import { usePathname } from "next/navigation"
 
 type Props = {
-  variant: 'current' | "id"
+  variant: "current" | "id"
   userId?: string
 }
 
-const IsActive = {
-  active: "active",
-  inactive: "inactive",
-  retired: "retired",
-} as const
-
-export function UserInfo({variant='current', userId}: Props) {
+export function UserInfo({ variant = "current", userId }: Props) {
   const [currentUser, setCurrentUser] = useState<User | undefined>(undefined)
+  const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false)
+
+  const pathname = usePathname()
+
+  let isAdmin:boolean = pathname.split('admin-dashboard').length > 1
 
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
@@ -24,9 +25,8 @@ export function UserInfo({variant='current', userId}: Props) {
     const target = evt.target as HTMLFormElement
     const formData = new FormData(target)
     const values = Object.fromEntries(formData.entries())
-    
 
-    if(currentUser?._id) {
+    if (currentUser?._id) {
       await updateUserData(currentUser._id, values)
     }
 
@@ -42,10 +42,10 @@ export function UserInfo({variant='current', userId}: Props) {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      if(variant === 'current') {
+      if (variant === "current") {
         const user = await getCurrentUser()
         setCurrentUser(user)
-      } else if(variant === 'id') {
+      } else if (variant === "id") {
         const user = await getUser(userId || "")
         setCurrentUser(user)
       }
@@ -53,11 +53,13 @@ export function UserInfo({variant='current', userId}: Props) {
     fetchCurrentUser()
   }, [])
 
+
+
   if (!currentUser) {
-    return <Loader/>
+    return <Loader />
   }
 
-  const userInfoKeyValuePair = Object.entries({
+  let userInfoKeyValuePair = Object.entries({
     premium: currentUser?.other?.premium,
     address: currentUser?.other?.address,
     city: currentUser?.other?.city,
@@ -82,12 +84,13 @@ export function UserInfo({variant='current', userId}: Props) {
               <h3 className="text-lg">{currentUser?.email}</h3>
             </div>
             <div className="ml-auto gap-3 flex flex-wrap">
-              {/* <button
+              <button
                 type="button"
+                onClick={() => setShowPasswordModal(true)}
                 className=" text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
-                Edit my profile
-              </button> */}
+                {isAdmin ? "Set Password" : "Change Password"}
+              </button>
             </div>
           </div>
         </div>
@@ -102,14 +105,26 @@ export function UserInfo({variant='current', userId}: Props) {
             return <InfoElement key={el[0]} element={el} />
           })}
         {/* {editAccess && ( */}
-          <button
-            type="submit"
-            className="text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            Save
-          </button>
+        <button
+          type="submit"
+          className="text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Save
+        </button>
         {/* )} */}
       </form>
+      {showPasswordModal &&
+        createPortal(
+          <Modal setShowModal={setShowPasswordModal} maxWidth="sm">
+            <FormContainer
+              variant={isAdmin ? "set pass" : "change pass"}
+              setShowModal={setShowPasswordModal}
+              userId={currentUser?._id}
+              through="modal"
+            />
+          </Modal>,
+          document.querySelector("#modal") as Element,
+        )}
     </>
   )
 }

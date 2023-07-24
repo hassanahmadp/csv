@@ -49,3 +49,4 @@ interface Token {
   email: string
   role: "USER" | "ADMIN"
 }
+
