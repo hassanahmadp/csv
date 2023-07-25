@@ -22,7 +22,7 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
         {`${firstName} ${lastName}`}
       </th>
       <td className="px-6 py-4">{email && email}</td>
-      <td className="px-6 py-4">{other?.hasOwnProperty('premium') && `${other.premium}`}</td>
+      <td className="px-6 py-4">{other?.hasOwnProperty("premium") && `${other.premium}`}</td>
       <td className="px-6 py-4">{other?.address && other.address}</td>
       <td className="px-6 py-4">{other?.city && other?.city}</td>
       <td className="px-6 py-4">{other?.state && other?.state}</td>
@@ -48,149 +48,25 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
   )
 }
 
-export function DashboardTable({showModal}: Props) {
+export function DashboardTable({ showModal }: Props) {
   const [allUsers, setAllUsers] = useState<User[] | undefined>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    setLoading(true)
     const getUsers = async () => {
       const users = await getAllUsers()
       setAllUsers(users)
+      setLoading(false)
     }
-    if(!showModal) {
+    if (!showModal) {
       getUsers()
     }
   }, [showModal])
 
   // const allUsers = await getAllUsers()
-  if (allUsers) {
-    if (allUsers.length > 0) {
-      return (
-        <table className="w-full text-sm text-left text-gray-500 ">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Premium User 
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Address
-              </th>
-              <th scope="col" className="px-6 py-3">
-                City
-              </th>
-              <th scope="col" className="px-6 py-3">
-                State
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Zip
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Home Phone
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Work Phone
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Department
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Active Status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Group Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Member Role
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Member Type
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Year
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {allUsers.map((user: User, idx: number) => {
-              return <MemberRow key={user.email} idx={idx} member={user} />
-            })}
-          </tbody>
-        </table>
-      )
-    } else {
-      return (
-        <table className="w-full text-sm text-left text-gray-500 ">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Premium User
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Address
-              </th>
-              <th scope="col" className="px-6 py-3">
-                City
-              </th>
-              <th scope="col" className="px-6 py-3">
-                State
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Zip
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Home Phone
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Work Phone
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Department
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Active Status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Group Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Member Role
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Member Type
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Year
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-center">
-              <td colSpan={16}>
-                <div className="p-8">No Users Found.</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      )
-    }
-  } else
+
+  if(loading) {
     return (
       <div className="flex justify-center items-center min-h-[10rem]">
         <HashLoader
@@ -202,4 +78,77 @@ export function DashboardTable({showModal}: Props) {
         />
       </div>
     )
+  }
+
+  if (allUsers) {
+    return (
+      <table className="w-full text-sm text-left text-gray-500 ">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
+          <tr>
+            <th scope="col" className="px-6 py-3">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Email
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Premium User
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Address
+            </th>
+            <th scope="col" className="px-6 py-3">
+              City
+            </th>
+            <th scope="col" className="px-6 py-3">
+              State
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Zip
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Home Phone
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Work Phone
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Department
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Active Status
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Group Email
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Member Role
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Member Type
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Year
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {allUsers.length > 0 &&
+            allUsers.map((user: User, idx: number) => {
+              return <MemberRow key={user.email} idx={idx} member={user} />
+            })}
+          {allUsers.length <= 0 && (
+            <tr className="text-center">
+              <td colSpan={16}>
+                <div className="p-8">No Users Found</div>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    )
+  }
 }

@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* </NoSsrAuthGuard> */}
         {/* {children} */}
         <div id="modal"></div>
+        <div id="modal-loader"></div>
         <Toaster/>
       </body>
     </html>

@@ -1,4 +1,5 @@
 import axios from "axios"
+import toast  from "react-hot-toast"
 
 type SignUpProps = {
   firstName: string,
@@ -31,6 +32,16 @@ export async function setPasswordOfUser(id:string, data: {password: string}) {
     const loginResponse = await axios.patch(`/api/setpassword/${id}`, data)
     return loginResponse
   } catch (error:any) {
+    console.error({error:error.message})
+  }
+}
+export async function changePassword(id:string, data:{oldPass: string, newPass: string}) {
+  try {
+    const response = await axios.patch(`/api/change-password/${id}`, data)
+    return response
+  } catch (error:any) {
+    // debugger
+    toast.error(error?.response?.data?.message)
     console.error({error:error.message})
   }
 }

@@ -1,10 +1,11 @@
 "use client"
-import { FormContainer, InfoElement, Modal } from "@/components"
+import { FormContainer, InfoElement, Loader, Modal } from "@/components"
 import { getCurrentUser, getUser, updateUserData } from "@/lib"
 import { useState, useEffect } from "react"
-import Loader from "../Loader"
 import { createPortal } from "react-dom"
 import { usePathname } from "next/navigation"
+import { HashLoader } from "react-spinners"
+import toast  from "react-hot-toast"
 
 type Props = {
   variant: "current" | "id"
@@ -14,6 +15,7 @@ type Props = {
 export function UserInfo({ variant = "current", userId }: Props) {
   const [currentUser, setCurrentUser] = useState<User | undefined>(undefined)
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const pathname = usePathname()
 
@@ -21,15 +23,21 @@ export function UserInfo({ variant = "current", userId }: Props) {
 
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
+    setLoading(true)
 
     const target = evt.target as HTMLFormElement
     const formData = new FormData(target)
     const values = Object.fromEntries(formData.entries())
 
     if (currentUser?._id) {
-      await updateUserData(currentUser._id, values)
+      const response = await updateUserData(currentUser._id, values)
+      if(response?.data?.success) toast.success('Info updated successfully.')
+      else toast.error('There is some issue in updating info.')
+    } else {
+      toast.error('User not found')
     }
 
+    setLoading(false)
     console.log(values)
   }
 
@@ -107,9 +115,21 @@ export function UserInfo({ variant = "current", userId }: Props) {
         {/* {editAccess && ( */}
         <button
           type="submit"
-          className="text-white transition-all duration-150 bg-black hover:text-black hover:bg-white border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          className="text-white transition-all w-24 duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Save
+          {
+            loading ? (
+              <HashLoader
+                color={"#fff"}
+                loading={true}
+                size={15}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            ) : (
+              "Save"
+            )
+          }
         </button>
         {/* )} */}
       </form>

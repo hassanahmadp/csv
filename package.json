@@ -18,10 +18,12 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
+    "csv-parser": "^3.0.0",
     "formdata-node": "^5.0.1",
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
     "mongoose": "^7.3.4",
+    "multer": "^1.4.5-lts.1",
     "next": "13.4.8",
     "postcss": "8.4.25",
     "react": "18.2.0",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7"
   }
 }

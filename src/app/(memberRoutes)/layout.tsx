@@ -1,7 +1,8 @@
 "use client"
+import { Loader } from "@/components"
 import { logout } from "@/lib"
 import { useRouter } from "next/navigation"
-import React from "react"
+import React , {useState} from "react"
 import toast from 'react-hot-toast'
 
 type Props = {
@@ -9,18 +10,26 @@ type Props = {
 }
 
 export default function layout({ children }: Props) {
+  const [loading, setLoading] = useState(false)
   const {push} = useRouter()
   
   const logoutHandler = async () => {
     try {
+      setLoading(true)
       await logout()
-      push('/')
+      await push('/')
+      setLoading(false)
       toast.success("Logout Successful")
     } catch (error:any) {
+      setLoading(false)
       console.error({error: error.message})
       toast.error("Logout Failed")
+    } finally {
+      setLoading(false)
     }
   }
+
+  
 
   return (
     <div>
@@ -31,6 +40,7 @@ export default function layout({ children }: Props) {
         >
           Sign Out
         </button>
+        {loading && <Loader/>}
       </div>
       {children}
     </div>

@@ -1,21 +1,39 @@
 "use client"
 import { DashboardTable, FormContainer, Modal } from "@/components"
-import { useState } from "react"
+import { uploadCSV } from "@/lib"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { createPortal } from "react-dom"
+import toast from "react-hot-toast"
 
 type Props = {}
 
 export default function AdminDashboard({}: Props) {
   const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false)
+
+  const handleFileUploadChange = async (evt: ChangeEvent<HTMLInputElement>) => {
+    console.log(evt.target.files && evt.target.files[0])
+    if (!evt.target.files) return
+    const response = await uploadCSV({ file: evt.target.files[0] })
+  }
+
   return (
     <main className="py-8 px-4 container mx-auto">
       <div className="flex gap-5 mb-8">
-        <button
-          type="button"
-          className="border hover:bg-white bg-black hover:text-black text-white font-normal rounded-sm text-md p-2 text-center"
-        >
-          Import CSV
-        </button>
+        <form className="m-0 p-0 flex">
+          <input
+            type="file"
+            className="opacity-0 absolute pointer-events-none"
+            name="file"
+            id="csvfile"
+            onChange={handleFileUploadChange}
+          />
+          <label
+            htmlFor="csvfile"
+            className="border hover:bg-white m-0 h-full bg-black cursor-pointer hover:text-black text-white font-normal rounded-sm text-md p-2 flex justify-center items-center text-center"
+          >
+            Import CSV
+          </label>
+        </form>
         <button
           type="button"
           className="border bg-white hover:bg-black text-black hover:text-white font-normal rounded-sm text-md p-2 text-center"
