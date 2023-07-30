@@ -1,7 +1,7 @@
 "use client"
 import { DashboardTable, FormContainer, Modal } from "@/components"
-import { uploadCSV } from "@/lib"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { downloadCSV, uploadCSV } from "@/lib"
+import { ChangeEvent, useState } from "react"
 import { createPortal } from "react-dom"
 import toast from "react-hot-toast"
 
@@ -15,6 +15,28 @@ export default function AdminDashboard({}: Props) {
     if (!evt.target.files) return
     const response = await uploadCSV({ file: evt.target.files[0] })
   }
+
+  const handleDownload = async () => {
+    try {
+      const response = await downloadCSV();
+      // const blob = await response.blob();
+
+      // Create a URL for the downloaded blob data
+      if(!response) throw new Error('Response not found while downloading the file in /admin-dashboard/[userId]')
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+
+      // Create an anchor element with the download link and trigger a click event
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'allUsers.csv';
+      link.click();
+
+      // Clean up the URL created for the blob
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
 
   return (
     <main className="py-8 px-4 container mx-auto">
@@ -36,6 +58,7 @@ export default function AdminDashboard({}: Props) {
         </form>
         <button
           type="button"
+          onClick={handleDownload}
           className="border bg-white hover:bg-black text-black hover:text-white font-normal rounded-sm text-md p-2 text-center"
         >
           Export CSV

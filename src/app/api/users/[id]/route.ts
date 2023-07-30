@@ -8,7 +8,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const id = request.url.split('/').at(-1)
     const data = await request.json()
-    await Members.findOneAndUpdate({_id: id}, {other:data})
+    await Members.findOneAndUpdate({_id: id}, {...data})
     // const users: any = await members.find({role: "USER"})
     return NextResponse.json({ id, data, success: true }, { status: 200 })
   } catch (error: any) {

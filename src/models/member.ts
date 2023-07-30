@@ -19,8 +19,30 @@ enum memberRoles {
 //   ): Query<User | null, User>
 // }
 
-const otherUserInfoSchema = new mongoose.Schema<OtherUserInfo>(
+const MemberSchema = new mongoose.Schema<User>(
   {
+    firstName: {
+      type: String,
+      required: [true, "Please provide your First Name"],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Please provide your Last Name"],
+    },
+    email: {
+      type: String,
+      required: [true, "Please provide your email"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide your password"],
+    },
+    role: {
+      type: String,
+      required: [true, "Please define your role"],
+      enum: Object.values(memberRoles),
+    },
     address: String,
     city: String,
     state: String,
@@ -37,38 +59,12 @@ const otherUserInfoSchema = new mongoose.Schema<OtherUserInfo>(
     member_type: String,
     premium: {
       type: String,
-      required: [true, 'Please confirm if the User is a Premium member or not.']
+      required: [true, "Please confirm if the User is a Premium member or not."],
     },
     year: String,
   },
   { timestamps: true },
 )
-
-const MemberSchema = new mongoose.Schema<User>({
-  firstName: {
-    type: String,
-    required: [true, "Please provide your First Name"],
-  },
-  lastName: {
-    type: String,
-    required: [true, "Please provide your Last Name"],
-  },
-  email: {
-    type: String,
-    required: [true, "Please provide your email"],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide your password"],
-  },
-  role: {
-    type: String,
-    required: [true, "Please define your role"],
-    enum: Object.values(memberRoles),
-  },
-  other: otherUserInfoSchema,
-})
 
 // let Members;
 

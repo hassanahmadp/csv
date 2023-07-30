@@ -16,9 +16,8 @@ interface Admin extends Person {
   role: 'ADMIN';
 }
 
-interface User extends Person {
+interface User extends Person, OtherUserInfo {
   role: 'USER';
-  other?: OtherUserInfo
 }
 
 const IsActive = {

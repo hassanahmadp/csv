@@ -3,13 +3,31 @@ import { useState, useEffect } from "react"
 import { getAllUsers } from "@/lib"
 import Link from "next/link"
 import { HashLoader } from "react-spinners"
+import { Loader } from "@/components"
 
 type Props = {
   showModal?: boolean
 }
 
 const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
-  const { firstName, lastName, email, role, other } = member
+  const {
+    firstName,
+    lastName,
+    email,
+    premium,
+    address,
+    city,
+    state,
+    zip,
+    home_phone,
+    work_phone,
+    is_active,
+    department,
+    group_email,
+    member_role,
+    member_type,
+    year,
+  } = member
 
   const evenOddClassesHandler = (): string => {
     if (idx % 2 === 0) return "bg-white border-b"
@@ -22,19 +40,19 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
         {`${firstName} ${lastName}`}
       </th>
       <td className="px-6 py-4">{email && email}</td>
-      <td className="px-6 py-4">{other?.hasOwnProperty("premium") && `${other.premium}`}</td>
-      <td className="px-6 py-4">{other?.address && other.address}</td>
-      <td className="px-6 py-4">{other?.city && other?.city}</td>
-      <td className="px-6 py-4">{other?.state && other?.state}</td>
-      <td className="px-6 py-4">{other?.zip && other?.zip}</td>
-      <td className="px-6 py-4">{other?.home_phone && other?.home_phone}</td>
-      <td className="px-6 py-4">{other?.work_phone && other?.work_phone}</td>
-      <td className="px-6 py-4">{other?.department && other?.department}</td>
-      <td className="px-6 py-4">{other?.is_active && other?.is_active}</td>
-      <td className="px-6 py-4">{other?.group_email && other?.group_email}</td>
-      <td className="px-6 py-4">{other?.member_role && other?.member_role}</td>
-      <td className="px-6 py-4">{other?.member_type && other?.member_type}</td>
-      <td className="px-6 py-4">{other?.year && other?.year}</td>
+      <td className="px-6 py-4">{premium && `${premium}`}</td>
+      <td className="px-6 py-4">{address && address}</td>
+      <td className="px-6 py-4">{city && city}</td>
+      <td className="px-6 py-4">{state && state}</td>
+      <td className="px-6 py-4">{zip && zip}</td>
+      <td className="px-6 py-4">{home_phone && home_phone}</td>
+      <td className="px-6 py-4">{work_phone && work_phone}</td>
+      <td className="px-6 py-4">{department && department}</td>
+      <td className="px-6 py-4">{is_active && is_active}</td>
+      <td className="px-6 py-4">{group_email && group_email}</td>
+      <td className="px-6 py-4">{member_role && member_role}</td>
+      <td className="px-6 py-4">{member_type && member_type}</td>
+      <td className="px-6 py-4">{year && year}</td>
       <td className="px-6 py-4">
         <Link
           href={`/admin-dashboard/${member._id}`}

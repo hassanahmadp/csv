@@ -1,11 +1,11 @@
 "use client"
-import { FormContainer, InfoElement, Loader, Modal } from "@/components"
+import { FormContainer, InfoElement, Loader, LoadingButton, Modal } from "@/components"
 import { getCurrentUser, getUser, updateUserData } from "@/lib"
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { usePathname } from "next/navigation"
 import { HashLoader } from "react-spinners"
-import toast  from "react-hot-toast"
+import toast from "react-hot-toast"
 
 type Props = {
   variant: "current" | "id"
@@ -19,7 +19,7 @@ export function UserInfo({ variant = "current", userId }: Props) {
 
   const pathname = usePathname()
 
-  let isAdmin:boolean = pathname.split('admin-dashboard').length > 1
+  let isAdmin: boolean = pathname.split("admin-dashboard").length > 1
 
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
@@ -31,10 +31,10 @@ export function UserInfo({ variant = "current", userId }: Props) {
 
     if (currentUser?._id) {
       const response = await updateUserData(currentUser._id, values)
-      if(response?.data?.success) toast.success('Info updated successfully.')
-      else toast.error('There is some issue in updating info.')
+      if (response?.data?.success) toast.success("Info updated successfully.")
+      else toast.error("There is some issue in updating info.")
     } else {
-      toast.error('User not found')
+      toast.error("User not found")
     }
 
     setLoading(false)
@@ -61,26 +61,24 @@ export function UserInfo({ variant = "current", userId }: Props) {
     fetchCurrentUser()
   }, [])
 
-
-
   if (!currentUser) {
     return <Loader />
   }
 
   let userInfoKeyValuePair = Object.entries({
-    premium: currentUser?.other?.premium,
-    address: currentUser?.other?.address,
-    city: currentUser?.other?.city,
-    state: currentUser?.other?.state,
-    zip: currentUser?.other?.zip,
-    home_phone: currentUser?.other?.home_phone,
-    work_phone: currentUser?.other?.work_phone,
-    department: currentUser?.other?.department,
-    is_active: currentUser?.other?.is_active,
-    group_email: currentUser?.other?.group_email,
-    member_role: currentUser?.other?.member_role,
-    member_type: currentUser?.other?.member_type,
-    year: currentUser?.other?.year,
+    premium: currentUser?.premium,
+    address: currentUser?.address,
+    city: currentUser?.city,
+    state: currentUser?.state,
+    zip: currentUser?.zip,
+    home_phone: currentUser?.home_phone,
+    work_phone: currentUser?.work_phone,
+    department: currentUser?.department,
+    is_active: currentUser?.is_active,
+    group_email: currentUser?.group_email,
+    member_role: currentUser?.member_role,
+    member_type: currentUser?.member_type,
+    year: currentUser?.year,
   })
   return (
     <>
@@ -108,30 +106,19 @@ export function UserInfo({ variant = "current", userId }: Props) {
         onKeyDown={keyDownHandler}
         onSubmit={handleSubmit}
       >
-        {currentUser?.other &&
-          userInfoKeyValuePair?.map(el => {
-            return <InfoElement key={el[0]} element={el} />
-          })}
-        {/* {editAccess && ( */}
-        <button
-          type="submit"
-          className="text-white transition-all w-24 duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        {userInfoKeyValuePair?.map(el => {
+          return <InfoElement key={el[0]} element={el} />
+        })}
+        <LoadingButton
+          loading={loading}
+          buttonProps={{
+            type: "submit",
+            className:
+              "text-white transition-all w-24 duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
+          }}
         >
-          {
-            loading ? (
-              <HashLoader
-                color={"#fff"}
-                loading={true}
-                size={15}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Save"
-            )
-          }
-        </button>
-        {/* )} */}
+          Save
+        </LoadingButton>
       </form>
       {showPasswordModal &&
         createPortal(

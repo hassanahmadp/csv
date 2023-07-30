@@ -20,6 +20,7 @@
     "clsx": "^1.2.1",
     "csv-parser": "^3.0.0",
     "formdata-node": "^5.0.1",
+    "json-2-csv": "^4.0.0",
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
     "mongoose": "^7.3.4",

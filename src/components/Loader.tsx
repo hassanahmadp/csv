@@ -1,11 +1,21 @@
 'use client'
-import React from "react"
+import React, {useState, useEffect} from "react"
 import { createPortal } from "react-dom"
 import { HashLoader } from "react-spinners"
 
 type Props = {}
 
 export function Loader({}: Props) {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return null // Don't render anything on the server-side
+  }
+
   const Spinner = (
     <HashLoader
       color={"#000"}

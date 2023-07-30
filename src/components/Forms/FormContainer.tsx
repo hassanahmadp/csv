@@ -6,6 +6,7 @@ import Link from "next/link"
 import { changePassword, logIn, setPasswordOfUser, signUp } from "@/lib"
 import toast from "react-hot-toast"
 import { HashLoader } from "react-spinners"
+import { LoadingButton } from "../General"
 
 type Props = {
   variant: "login" | "sign up" | "set pass" | "change pass"
@@ -14,7 +15,7 @@ type Props = {
   userId?: string | number
 }
 
-function LoginForm({loading}: {loading: boolean}) {
+function LoginForm({ loading }: { loading: boolean }) {
   const [showPass, setShowPass] = useState<boolean>(false)
 
   return (
@@ -57,24 +58,16 @@ function LoginForm({loading}: {loading: boolean}) {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        <LoadingButton
+          loading={loading}
+          buttonProps={{
+            type: "submit",
+            className:
+              "w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
+          }}
         >
-          {
-            loading ? (
-              <HashLoader
-                color={"#fff"}
-                loading={true}
-                size={15}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Sign in"
-            )
-          }
-        </button>
+          Sign in
+        </LoadingButton>
 
         <div className="flex gap-2 justify-center text-xs mt-4">
           Not a member?
@@ -87,7 +80,13 @@ function LoginForm({loading}: {loading: boolean}) {
   )
 }
 
-export function SignUpForm({ through, loading }: { through?: "route" | "modal", loading: boolean}) {
+export function SignUpForm({
+  through,
+  loading,
+}: {
+  through?: "route" | "modal"
+  loading: boolean
+}) {
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -155,24 +154,15 @@ export function SignUpForm({ through, loading }: { through?: "route" | "modal", 
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        <LoadingButton
+          loading
+          buttonProps={{
+            type:"submit",
+            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          }}
         >
-          {
-            loading ? (
-              <HashLoader
-                color={"#fff"}
-                loading={true}
-                size={15}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Sign Up"
-            )
-          }
-        </button>
+          Sign Up
+        </LoadingButton>
 
         {through === "route" && (
           <div className="flex gap-2 justify-center text-xs mt-4">
@@ -186,7 +176,13 @@ export function SignUpForm({ through, loading }: { through?: "route" | "modal", 
     </div>
   )
 }
-export function SetPasswordForm({ through, loading }: { through?: "route" | "modal", loading: boolean }) {
+export function SetPasswordForm({
+  through,
+  loading,
+}: {
+  through?: "route" | "modal"
+  loading: boolean
+}) {
   const [showPass, setShowPass] = useState<boolean>(false)
   return (
     <div className="p-6">
@@ -214,29 +210,26 @@ export function SetPasswordForm({ through, loading }: { through?: "route" | "mod
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        <LoadingButton
+          loading
+          buttonProps={{
+            type:"submit",
+            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          }}
         >
-          {
-            loading ? (
-              <HashLoader
-                color={"#fff"}
-                loading={true}
-                size={15}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Set Password"
-            )
-          }
-        </button>
+         Set Password
+        </LoadingButton>
       </div>
     </div>
   )
 }
-export function ChangePasswordForm({ through, loading }: { through?: "route" | "modal", loading: boolean }) {
+export function ChangePasswordForm({
+  through,
+  loading,
+}: {
+  through?: "route" | "modal"
+  loading: boolean
+}) {
   const [showPass, setShowPass] = useState<{
     oldPass: boolean
     newPass: boolean
@@ -312,24 +305,15 @@ export function ChangePasswordForm({ through, loading }: { through?: "route" | "
           </div>
         </div> */}
 
-        <button
-          type="submit"
-          className="w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        <LoadingButton
+          loading
+          buttonProps={{
+            type:"submit",
+            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          }}
         >
-          {
-            loading ? (
-              <HashLoader
-                color={"#fff"}
-                loading={true}
-                size={15}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Change Password"
-            )
-          }
-        </button>
+          Change Password
+        </LoadingButton>
       </div>
     </div>
   )
@@ -417,12 +401,12 @@ export function FormContainer({
       //
       //
       const response = await setPasswordOfUser(`${userId}`, data)
-      if(response?.data.success) {
-        toast.success('Password has been set successfully.')
+      if (response?.data.success) {
+        toast.success("Password has been set successfully.")
         setShowModal(false)
       } else {
         setButtonLoading(false)
-        toast.error('There is some issue in setting the password')
+        toast.error("There is some issue in setting the password")
       }
     } catch (error: any) {
       setButtonLoading(false)
@@ -450,15 +434,17 @@ export function FormContainer({
       // through === "route" && router.push("/")
       // through === "modal" && setShowModal(false)
 
-      const response = await changePassword(`${userId}`, {oldPass: oldPassword, newPass: newPassword})
+      const response = await changePassword(`${userId}`, {
+        oldPass: oldPassword,
+        newPass: newPassword,
+      })
 
-      if(response?.data?.success) {
+      if (response?.data?.success) {
         toast.success("Password Successfully Changed")
         setShowModal(false)
       } else {
         throw new Error(response?.data?.message)
       }
-
     } catch (error: any) {
       setButtonLoading(false)
       console.error({ error: error.message })
@@ -490,7 +476,9 @@ export function FormContainer({
       {variant === "login" && <LoginForm loading={buttonLoading} />}
       {variant === "sign up" && <SignUpForm loading={buttonLoading} through={through} />}
       {variant === "set pass" && <SetPasswordForm loading={buttonLoading} through={through} />}
-      {variant === "change pass" && <ChangePasswordForm loading={buttonLoading} through={through} />}
+      {variant === "change pass" && (
+        <ChangePasswordForm loading={buttonLoading} through={through} />
+      )}
     </form>
   )
 }
