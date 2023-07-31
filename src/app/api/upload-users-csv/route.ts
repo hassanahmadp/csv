@@ -1,13 +1,17 @@
 import { connect } from "@/dbConfig/dbConfig"
-import members from "@/models/member"
 import { NextRequest, NextResponse } from "next/server"
-import { getDataFromToken } from "@/helpers/getDataFromToken"
-import { csv2json } from "json-2-csv"
+import { getDataFromToken } from "@/helpers"
+import csvParser from "csv-parser"
+import fs from "fs"
+import Papa from "papaparse"
+import { Readable } from "stream"
+import Members from "@/models/member"
 
 connect()
 
 export async function POST(request: NextRequest) {
   try {
+    debugger
     const token = request.cookies.get("token")?.value || ""
 
     const { role } = await getDataFromToken(token)
@@ -22,39 +26,87 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
-    debugger
+    const formData = await request.formData()
+    const file: File | null = formData.get("file") as File | null
 
-    // const allUsers = await members.find({ role: "USER" })
+    if (!file) {
+      return NextResponse.json(
+        {
+          message: "No file uploaded",
+          success: false,
+        },
+        { status: 400 },
+      )
+    }
+    const buffer = await file.arrayBuffer()
+    const fileContent = Buffer.from(buffer)
 
-    // let allUsersClone: any[] = JSON.parse(JSON.stringify(allUsers)).map((user: User) => ({
-    //   "First Name": user?.firstName,
-    //   "Last Name": user?.lastName,
-    //   Email: user?.email,
-    //   Address: user?.address,
-    //   City: user?.city,
-    //   State: user?.state,
-    //   Zip: user?.zip,
-    //   "Home Phone": user?.home_phone,
-    //   "Work Phone": user?.work_phone,
-    //   Department: user?.department,
-    //   Status: user?.is_active,
-    //   "Group Email": user?.group_email,
-    //   "User Role": user?.member_role,
-    //   Type: user?.member_type,
-    //   "Premium User": user?.premium,
-    //   year: user?.year,
-    // }))
+    const stream = Readable.from([fileContent])
 
-    // const csvFile = await json2csv(allUsersClone, {
-    //   excludeKeys: ["_id", "__v", "password", "role", "createdAt", "updatedAt"],
+    const csvData: csvElement[] = await new Promise((resolve, reject) => {
+      const results: csvElement[] = []
+
+      Papa.parse<csvElement>(stream, {
+        header: true, // Set this to true if your CSV file has headers
+        skipEmptyLines: true,
+        complete: result => {
+          results.push(...result.data)
+          resolve(results)
+        },
+        error: error => {
+          reject(error)
+        },
+      })
+    })
+
+    // csvData.forEach(async (user) => {
+    //   const newUnsignedMember = new Members({
+    //     firstName: user["First Name"],
+    //     lastName: user["Last Name"],
+    //     email: user.Email,
+    //     password: 'un assigned',
+    //     role: "USER",
+    //     address: "",
+    //     city: "",
+    //     state: "",
+    //     zip: "",
+    //     home_phone: "",
+    //     work_phone: "",
+    //     department: "",
+    //     is_active: "active",
+    //     group_email: "",
+    //     member_role: "",
+    //     member_type: "",
+    //     year: "",
+    //     premium: "true",
+    //   })
+
+    //   const savedMember = await newUnsignedMember.save()
     // })
 
-    // const response = new NextResponse()
-
-    // response.headers.set("content-type", "application/CSV")
-
-    // return response
+    const newMembers: any[] = csvData.map(user => ({
+      firstName: user["First Name"],
+      lastName: user["Last Name"],
+      email: user.Email,
+      password: "un assigned",
+      role: "USER",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+      home_phone: "",
+      work_phone: "",
+      department: "",
+      is_active: "active",
+      group_email: "",
+      member_role: "",
+      member_type: "",
+      year: "",
+      premium: "false",
+    }))
+    await Members.deleteMany({role: "USER"})
+    debugger
+    await Members.insertMany([...newMembers])
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

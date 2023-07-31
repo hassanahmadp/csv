@@ -36,11 +36,11 @@ export async function GET(request: NextRequest) {
       'Work Phone': user?.work_phone,
       'Department': user?.department,
       'Status': user?.is_active,
-      'Group Email': user?.group_email,
-      'User Role': user?.member_role,
-      'Type': user?.member_type,
+      // 'Group Email': user?.group_email,
+      // 'User Role': user?.member_role,
+      // 'Type': user?.member_type,
       'Premium User': user?.premium,
-      'year': user?.year
+      // 'year': user?.year
     }))
 
     const csvFile = await json2csv(allUsersClone, {excludeKeys: ['_id', '__v', 'password', 'role', 'createdAt', 'updatedAt']})

@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       member_role: "",
       member_type: "",
       year: "",
-      premium: "true",
+      premium: "false",
     })
 
     const savedMember = await newMember.save()
@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
       success: true,
       savedMember,
     })
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

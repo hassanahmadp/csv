@@ -8,7 +8,7 @@ connect()
 
 export async function PATCH(request: NextRequest) {
   try {
-    // debugger
+    
     const token = request.cookies.get('token')?.value || ""
 
     const {id} = await getDataFromToken(token);

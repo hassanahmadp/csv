@@ -1,7 +1,5 @@
 
 import jwtDecode from "jwt-decode"
-import { NextRequest } from "next/server"
-
 
 export const getDataFromToken = (token:string) => {
   try {

@@ -40,7 +40,6 @@ export async function changePassword(id:string, data:{oldPass: string, newPass: 
     const response = await axios.patch(`/api/change-password/${id}`, data)
     return response
   } catch (error:any) {
-    // debugger
     toast.error(error?.response?.data?.message)
     console.error({error:error.message})
   }

@@ -49,3 +49,18 @@ interface Token {
   role: "USER" | "ADMIN"
 }
 
+
+type csvElement = {
+  "First Name": string
+  "Last Name": string
+  Email: string
+  Address: string
+  City: string
+  State: string
+  Zip: string
+  "Home Phone": string
+  "Work Phone": string
+  Department: string
+  Status: string
+  "Premium User": string
+}

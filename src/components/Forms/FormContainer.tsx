@@ -424,16 +424,6 @@ export function FormContainer({
 
       const { oldPassword, newPassword } = JSON.parse(JSON.stringify(data))
 
-      // if(through === 'modal') {
-      //   const user = await getUser(`${userId || ""}`)
-      //   debugger
-      // }
-
-      // await signUp({ firstName, lastName, email, password })
-      // toast.success("Signup Successful.")
-      // through === "route" && router.push("/")
-      // through === "modal" && setShowModal(false)
-
       const response = await changePassword(`${userId}`, {
         oldPass: oldPassword,
         newPass: newPassword,

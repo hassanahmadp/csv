@@ -13,7 +13,9 @@ export default function AdminDashboard({}: Props) {
   const handleFileUploadChange = async (evt: ChangeEvent<HTMLInputElement>) => {
     console.log(evt.target.files && evt.target.files[0])
     if (!evt.target.files) return
+    debugger
     const response = await uploadCSV({ file: evt.target.files[0] })
+    if(response?.data?.success) toast.success('Data Changed Successfully.')
   }
 
   const handleDownload = async () => {
