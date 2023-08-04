@@ -15,7 +15,7 @@ export default function AdminDashboard({}: Props) {
   const [loading, setLoading] = useState<boolean>(true)
 
   const getUsers = async () => {
-    const users = await getAllUsers()
+    const users: User[] = await getAllUsers()
     setAllUsers(users)
     setLoading(false)
   }
@@ -25,7 +25,6 @@ export default function AdminDashboard({}: Props) {
 
     if (!evt.target.files) return
     const response = await uploadCSV({ file: evt.target.files[0] })
-    debugger
     if(response?.data?.success) {
       toast.success('Data Changed Successfully.')
       getUsers()

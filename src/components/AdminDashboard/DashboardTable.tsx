@@ -87,7 +87,7 @@ export function DashboardTable({ loading, allUsers }: Props) {
       </div>
     )
   }
-
+  
   if (allUsers) {
     return (
       <table className="w-full text-sm text-left text-gray-500 ">
