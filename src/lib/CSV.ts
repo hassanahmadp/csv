@@ -5,6 +5,7 @@ export async function uploadCSV({ file }: {file: File}) {
     const formData = new FormData()
     formData.append("file", file)
     const response = await axios.post(`/api/upload-users-csv`, formData )
+    debugger
     return response
   } catch (error: any) {
     console.error({ error: error.message })

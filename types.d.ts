@@ -46,7 +46,7 @@ interface Token {
   id: string | number | undefined,
   name: string
   email: string
-  role: "USER" | "ADMIN"
+  role?: "USER" | "ADMIN"
 }
 
 

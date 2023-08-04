@@ -6,7 +6,8 @@ import { HashLoader } from "react-spinners"
 import { Loader } from "@/components"
 
 type Props = {
-  showModal?: boolean
+  loading: boolean,
+  allUsers: User[] | undefined
 }
 
 const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
@@ -66,21 +67,10 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
   )
 }
 
-export function DashboardTable({ showModal }: Props) {
-  const [allUsers, setAllUsers] = useState<User[] | undefined>([])
-  const [loading, setLoading] = useState<boolean>(true)
+export function DashboardTable({ loading, allUsers }: Props) {
+  
 
-  useEffect(() => {
-    setLoading(true)
-    const getUsers = async () => {
-      const users = await getAllUsers()
-      setAllUsers(users)
-      setLoading(false)
-    }
-    if (!showModal) {
-      getUsers()
-    }
-  }, [showModal])
+  
 
   // const allUsers = await getAllUsers()
 

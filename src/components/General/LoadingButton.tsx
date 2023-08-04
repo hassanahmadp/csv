@@ -10,8 +10,8 @@ type Props = {
 export function LoadingButton({ children, loading, buttonProps, loaderProps }: Props) {
   return (
     <button {...buttonProps}>
-      {loading && children}
-      {!loading && (
+      {!loading && children}
+      {loading && (
         <HashLoader
           color={loaderProps?.color || "#fff"}
           loading={true}

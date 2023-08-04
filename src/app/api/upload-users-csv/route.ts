@@ -1,20 +1,20 @@
 import { connect } from "@/dbConfig/dbConfig"
 import { NextRequest, NextResponse } from "next/server"
 import { getDataFromToken } from "@/helpers"
-import csvParser from "csv-parser"
-import fs from "fs"
 import Papa from "papaparse"
 import { Readable } from "stream"
 import Members from "@/models/member"
+import jwt from "jsonwebtoken"
 
 connect()
 
 export async function POST(request: NextRequest) {
   try {
-    debugger
     const token = request.cookies.get("token")?.value || ""
 
     const { role } = await getDataFromToken(token)
+
+    const {host} = await request.nextUrl;
 
     if (role !== "ADMIN") {
       return NextResponse.json(
@@ -59,31 +59,6 @@ export async function POST(request: NextRequest) {
       })
     })
 
-    // csvData.forEach(async (user) => {
-    //   const newUnsignedMember = new Members({
-    //     firstName: user["First Name"],
-    //     lastName: user["Last Name"],
-    //     email: user.Email,
-    //     password: 'un assigned',
-    //     role: "USER",
-    //     address: "",
-    //     city: "",
-    //     state: "",
-    //     zip: "",
-    //     home_phone: "",
-    //     work_phone: "",
-    //     department: "",
-    //     is_active: "active",
-    //     group_email: "",
-    //     member_role: "",
-    //     member_type: "",
-    //     year: "",
-    //     premium: "true",
-    //   })
-
-    //   const savedMember = await newUnsignedMember.save()
-    // })
-
     const newMembers: any[] = csvData.map(user => ({
       firstName: user["First Name"],
       lastName: user["Last Name"],
@@ -104,9 +79,29 @@ export async function POST(request: NextRequest) {
       year: "",
       premium: "false",
     }))
+
     await Members.deleteMany({role: "USER"})
-    debugger
+  
     await Members.insertMany([...newMembers])
+
+    const allUsers = await Members.find({role: 'USER'})
+
+    for (const user of allUsers) {
+      
+      const tokenData: Token = {
+        id: user._id,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email
+      }
+
+      const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY!, { expiresIn: "5m" }) 
+
+    }
+
+
+
+    return NextResponse.json({ success: true, message: "Users inserted successfully" })
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
