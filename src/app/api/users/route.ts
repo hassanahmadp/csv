@@ -2,6 +2,8 @@ import { connect } from "@/dbConfig/dbConfig"
 import members from "@/models/member"
 import { NextRequest, NextResponse } from "next/server"
 
+export const dynamic = "force-dynamic"
+
 connect()
 
 export async function GET() {

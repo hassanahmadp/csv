@@ -7,12 +7,8 @@ type AllUsersResponse = {
 
 export async function getAllUsers() {
   try {
-    // const response = await axios.get<AllUsersResponse>("/api/users", config)
-    const data = await fetch('/api/users', {
-      cache: 'no-store'
-    }).then(res => res.json())
-
-    return data?.users
+    const {data: {users}} = await axios.get<AllUsersResponse>("/api/users")
+    return users
   } catch (error: any) {
     console.error({ error: error.message })
   }
