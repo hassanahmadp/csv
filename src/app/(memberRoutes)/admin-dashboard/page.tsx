@@ -15,7 +15,7 @@ export default function AdminDashboard({}: Props) {
   const [loading, setLoading] = useState<boolean>(true)
 
   const getUsers = async () => {
-    const users: User[] = await getAllUsers()
+    const users: User[] = await getAllUsers() as User[]
     setAllUsers(users)
     setLoading(false)
   }
