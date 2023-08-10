@@ -6,7 +6,7 @@ import { getDataFromToken } from "./helpers/getDataFromToken"
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
-  const isPublicPath = ["/", "/sign-up"].includes(path)
+  const isPublicPath = ["/", "/sign-up", "/set-password/path*"].includes(path)
 
   const isAdminPath = ['/admin-dashboard', '/admin-dashboard/:path*'].includes(path)
   const isUserPath = ['/dashboard'].includes(path)
@@ -44,5 +44,5 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/", "/sign-up", "/admin-dashboard", "/dashboard", "/admin-dashboard/:path*"],
+  matcher: ["/", "/sign-up", "/admin-dashboard", "/dashboard", "/admin-dashboard/:path*", "/set-password/:path*"],
 }

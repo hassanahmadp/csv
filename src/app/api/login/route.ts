@@ -6,6 +6,9 @@ import jwt from 'jsonwebtoken'
 
 connect() 
 
+
+export const dynamic = "force-dynamic"
+
 export async function POST(request: NextRequest) {
   try {
     const reqBody: User | Admin = await request.json()

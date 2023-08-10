@@ -5,7 +5,6 @@ connect()
 
 export const dynamic = "force-dynamic"
 
-
 export async function GET() {
   try {
     const response = NextResponse.json({

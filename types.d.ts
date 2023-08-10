@@ -39,6 +39,7 @@ interface OtherUserInfo {
   member_role?: string
   member_type?: string
   premium?: string
+  createdAt?: string
   year?: string
 }
 
@@ -54,6 +55,7 @@ type csvElement = {
   "First Name": string
   "Last Name": string
   Email: string
+  "Payment Status": string
   Address: string
   City: string
   State: string
@@ -62,5 +64,7 @@ type csvElement = {
   "Work Phone": string
   Department: string
   Status: string
-  "Premium User": string
+  "Member Type": string
+  "Current Year": string
+  "Join Date": string
 }

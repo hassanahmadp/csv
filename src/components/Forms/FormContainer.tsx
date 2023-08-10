@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { changePassword, logIn, setPasswordOfUser, signUp } from "@/lib"
+import { changePassword, logIn, logout, setPasswordOfUser, signUp } from "@/lib"
 import toast from "react-hot-toast"
-import { HashLoader } from "react-spinners"
 import { LoadingButton } from "../General"
 
 type Props = {
@@ -155,10 +154,11 @@ export function SignUpForm({
         </div>
 
         <LoadingButton
-          loading
+          loading={loading}
           buttonProps={{
-            type:"submit",
-            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            type: "submit",
+            className:
+              "w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           }}
         >
           Sign Up
@@ -211,13 +211,15 @@ export function SetPasswordForm({
         </div>
 
         <LoadingButton
-          loading
+          loading={loading}
           buttonProps={{
-            type:"submit",
-            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            color:'#000',
+            type: "submit",
+            className:
+              "w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           }}
         >
-         Set Password
+          Set Password
         </LoadingButton>
       </div>
     </div>
@@ -306,10 +308,11 @@ export function ChangePasswordForm({
         </div> */}
 
         <LoadingButton
-          loading
+          loading={loading}
           buttonProps={{
-            type:"submit",
-            className:"w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            type: "submit",
+            className:
+              "w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           }}
         >
           Change Password
@@ -383,6 +386,7 @@ export function FormContainer({
       console.error({ error: error.message })
     }
   }
+
   const handleSetPassSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setButtonLoading(true)
@@ -407,6 +411,11 @@ export function FormContainer({
       } else {
         setButtonLoading(false)
         toast.error("There is some issue in setting the password")
+      }
+      if(through === 'route') {
+        await logout()
+        debugger
+        router.push('/')
       }
     } catch (error: any) {
       setButtonLoading(false)
@@ -448,7 +457,7 @@ export function FormContainer({
   return (
     <form
       onSubmit={
-        variant === "login"
+           variant === "login"
           ? handleSubmit
           : variant === "sign up"
           ? handleSignUpSubmit

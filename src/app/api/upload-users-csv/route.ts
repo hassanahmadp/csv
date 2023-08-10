@@ -1,6 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig"
 import { NextRequest, NextResponse } from "next/server"
-import { getDataFromToken } from "@/helpers"
+import { getDataFromToken, sendMailToUser } from "@/helpers"
 import Papa from "papaparse"
 import { Readable } from "stream"
 import Members from "@/models/member"
@@ -8,13 +8,15 @@ import jwt from "jsonwebtoken"
 
 connect()
 
+export const dynamic = "force-dynamic"
+
 export async function POST(request: NextRequest) {
   try {
     const token = request.cookies.get("token")?.value || ""
 
     const { role } = await getDataFromToken(token)
 
-    const {host} = await request.nextUrl;
+    const urlData = await request.nextUrl
 
     if (role !== "ADMIN") {
       return NextResponse.json(
@@ -80,28 +82,31 @@ export async function POST(request: NextRequest) {
       premium: "false",
     }))
 
-    await Members.deleteMany({role: "USER"})
-  
+    await Members.deleteMany({ role: "USER" })
+
     await Members.insertMany([...newMembers])
 
-    const allUsers = await Members.find({role: 'USER'})
+    const allUsers: User[] = await Members.find({ role: "USER" })
 
     for (const user of allUsers) {
-      
       const tokenData: Token = {
-        id: user._id,
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email
+        id: user?._id,
+        name: `${user?.firstName} ${user?.lastName}`,
+        email: user?.email,
       }
 
-      const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY!, { expiresIn: "5m" }) 
+      const newSecret = process.env.JWT_SECRET_KEY + user?.password
 
+      const newUserToken = await jwt.sign(tokenData, newSecret, {
+        expiresIn: "10m",
+      })
+
+      const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
+
+      await sendMailToUser(user, link)
     }
-
-
-
-    return NextResponse.json({ success: true, message: "Users inserted successfully" })
     
+    return NextResponse.json({ success: true, message: "Users inserted successfully" })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

@@ -75,8 +75,6 @@ export function UserInfo({ variant = "current", userId }: Props) {
     work_phone: currentUser?.work_phone,
     department: currentUser?.department,
     is_active: currentUser?.is_active,
-    group_email: currentUser?.group_email,
-    member_role: currentUser?.member_role,
     member_type: currentUser?.member_type,
     year: currentUser?.year,
   })

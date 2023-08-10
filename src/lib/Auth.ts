@@ -53,7 +53,6 @@ export async function logout() {
     return logoutResponse
   } catch (error: any) {
     console.error({error:error.message})
-    
   }
 }
 

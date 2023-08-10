@@ -1,23 +1,22 @@
 import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
-  port: 587, // Replace with your SMTP port
-  secure: false, // Set to true if using SSL/TLS
+  service:'gmail',
   auth: {
-    user: "your-email@example.com", // Replace with your email address
-    pass: "your-email-password", // Replace with your email password
+    user: "hassaanahmaddigital@gmail.com", 
+    pass: "your-email-password", 
   },
 })
 
 
-export async function sendMailToUser(user: User) {
-  const subject = "Welcome to our website"
-  const body = `Dear ${user.firstName},\n\nWelcome to our website! We are excited to have you as a member.\n\nBest regards,\nThe Website Team`
+export async function sendMailToUser(user: User, link: string) {
+  const subject = "Email to set password"
+  const body = `Dear ${user.firstName},\n\nWelcome to our website! To set a password, click on the link. ${link}\n\nBest regards,\nThe Website Team`
 
   try {
     // Send the email
     await transporter.sendMail({
-      from: "hassanahmadp@gmail.com", // Replace with your email address
+      from: "hassaanahmaddigital@gmail.com",
       to: user.email,
       subject,
       text: body,
