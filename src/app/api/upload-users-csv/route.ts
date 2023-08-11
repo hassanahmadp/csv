@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       })
 
       const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
-
+      
       await sendMailToUser(user, link)
     }
     

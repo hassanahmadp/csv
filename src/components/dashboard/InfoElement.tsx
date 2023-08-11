@@ -63,18 +63,68 @@ export function InfoElement({ element }: Props) {
     title = "Is Premium User?"
     InputElement = (
       <div className="flex gap-4">
-        <input type="text" hidden name="premium" value={inputValue}/>
+        <input type="text" hidden name="premium" value={inputValue} />
         <input
           type="checkbox"
           id="premium"
-          checked={inputValue === 'true'}
-          value={`${inputValue === 'true'}`}
+          checked={inputValue === "true"}
+          value={`${inputValue === "true"}`}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const checkedValue = `${e.target.checked}`
             setInputValue(checkedValue)
           }}
         />
         <label htmlFor="premium">Premium</label>
+      </div>
+    )
+  } else if (element[0] === "department") {
+    title = "Department"
+    let options = [
+      { title: "Amtrak PD", value: "Amtrak PD" },
+      { title: "Bay Constable", value: "Bay Constable" },
+      { title: "Federal Corrections", value: "Federal Corrections" },
+      { title: "Freeport PD", value: "Freeport PD" },
+      { title: "Hempstead PD", value: "Hempstead PD" },
+      { title: "Long Beach PD", value: "Long Beach PD" },
+      { title: "Lynbrook PD", value: "Lynbrook PD" },
+      { title: "Malvern PD", value: "Malvern PD" },
+      { title: "NC DA Squad", value: "NC DA Squad" },
+      { title: "NC Probation", value: "NC Probation" },
+      { title: "NC Sheriff", value: "NC Sheriff" },
+      { title: "NCPD ", value: "NCPD " },
+      { title: "NYC DOC", value: "NYC DOC" },
+      { title: "NYC Sanitation Police", value: "NYC Sanitation Police" },
+      { title: "NYC Sheriff", value: "NYC Sheriff" },
+      { title: "NYPD", value: "NYPD" },
+      { title: "NYS Court Officers ", value: "NYS Court Officers " },
+      { title: "NYS Trooper", value: "NYS Trooper" },
+      { title: "Out of State Corrections", value: "Out of State Corrections" },
+      { title: "Out of State Other", value: "Out of State Other" },
+      { title: "Out of State Police", value: "Out of State Police" },
+      { title: "Out of State Sherriff ", value: "Out of State Sherriff " },
+      { title: "Postal Police ", value: "Postal Police " },
+      { title: "Quogue PD", value: "Quogue PD" },
+      { title: "RVC Police ", value: "RVC Police " },
+      { title: "SC Sheriff", value: "SC Sheriff" },
+      { title: "SCPD ", value: "SCPD " },
+      { title: "Village PD Other", value: "Village PD Other" },
+    ]
+    InputElement = (
+      <div className="flex gap-4">
+        <select
+          name="department"
+          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block px-0 py-2.5 "
+          id="department"
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
+        >
+          <option value="">Select One</option>
+          {options.map(option => (
+            <option key={option.title} value={option.value}>
+              {option.title}
+            </option>
+          ))}
+        </select>
       </div>
     )
   } else {

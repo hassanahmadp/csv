@@ -414,7 +414,6 @@ export function FormContainer({
       }
       if(through === 'route') {
         await logout()
-        debugger
         router.push('/')
       }
     } catch (error: any) {
