@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
+    debugger
     const token = request.cookies.get("token")?.value || ""
 
     const { role } = await getDataFromToken(token)
@@ -62,49 +63,51 @@ export async function POST(request: NextRequest) {
     })
 
     const newMembers: any[] = csvData.map(user => ({
-      firstName: user["First Name"],
-      lastName: user["Last Name"],
-      email: user.Email,
-      password: "un assigned",
+      member_number: user['Member Number'] || Math.floor(Math.random() * 1000),
+      firstName: user["First Name"] || "",
+      lastName: user["Last Name"] || "",
+      email: user.Email || "",
+      password: user.Password || "",
+      suffix: user.Suffix ||"",
       role: "USER",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-      home_phone: "",
-      work_phone: "",
-      department: "",
-      is_active: "active",
-      group_email: "",
-      member_role: "",
-      member_type: "",
-      year: "",
-      premium: "false",
+      address1: user.Address1 || "",
+      address2: user.Address2 || "",
+      city: user.City || "",
+      state: user.State || "",
+      zip: user.Zip || "",
+      cell_phone: user["Cell Phone"] || "",
+      work_phone: user["Work Phone"] || "",
+      department: user.Department || "",
+      is_active: user.Status || "active",
+      member_type: user["Member Type"] || "",
+      join_date: user["Join Date"] || new Date().toISOString(),
+      payment_date: user['Payment Date'] || "",
+      premium: user["Payment Status"] || "",
     }))
 
     await Members.deleteMany({ role: "USER" })
 
     await Members.insertMany([...newMembers])
 
-    const allUsers: User[] = await Members.find({ role: "USER" })
+    // const allUsers: User[] = await Members.find({ role: "USER" })
 
-    for (const user of allUsers) {
-      const tokenData: Token = {
-        id: user?._id,
-        name: `${user?.firstName} ${user?.lastName}`,
-        email: user?.email,
-      }
+    // for (const user of allUsers) {
+    //   const tokenData: Token = {
+    //     id: user?._id,
+    //     name: `${user?.firstName} ${user?.lastName}`,
+    //     email: user?.email,
+    //   }
 
-      const newSecret = process.env.JWT_SECRET_KEY + user?.password
+    //   const newSecret = process.env.JWT_SECRET_KEY + user?.password
 
-      const newUserToken = await jwt.sign(tokenData, newSecret, {
-        expiresIn: "10m",
-      })
+    //   const newUserToken = await jwt.sign(tokenData, newSecret, {
+    //     expiresIn: "10m",
+    //   })
 
-      const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
+    //   const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
       
-      await sendMailToUser(user, link)
-    }
+    //   await sendMailToUser(user, link)
+    // }
     
     return NextResponse.json({ success: true, message: "Users inserted successfully" })
   } catch (error: any) {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { changePassword, logIn, logout, setPasswordOfUser, signUp } from "@/lib"
+import { changePassword, getAllUsers, logIn, logout, setPasswordOfUser, signUp } from "@/lib"
 import toast from "react-hot-toast"
 import { LoadingButton } from "../General"
 

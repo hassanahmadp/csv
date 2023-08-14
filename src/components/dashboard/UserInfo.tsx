@@ -6,6 +6,7 @@ import { createPortal } from "react-dom"
 import { usePathname } from "next/navigation"
 import { HashLoader } from "react-spinners"
 import toast from "react-hot-toast"
+import Link from "next/link"
 
 type Props = {
   variant: "current" | "id"
@@ -50,13 +51,14 @@ export function UserInfo({ variant = "current", userId }: Props) {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
+      let user
       if (variant === "current") {
-        const user = await getCurrentUser()
+        user = await getCurrentUser()
         setCurrentUser(user)
       } else if (variant === "id") {
-        const user = await getUser(userId || "")
-        setCurrentUser(user)
+        user = await getUser(userId || "")
       }
+      setCurrentUser(user)
     }
     fetchCurrentUser()
   }, [])
@@ -67,21 +69,35 @@ export function UserInfo({ variant = "current", userId }: Props) {
 
   let userInfoKeyValuePair = Object.entries({
     premium: currentUser?.premium,
-    address: currentUser?.address,
+    suffix: currentUser?.suffix,
+    address1: currentUser?.address1,
+    address2: currentUser?.address2,
     city: currentUser?.city,
     state: currentUser?.state,
     zip: currentUser?.zip,
-    home_phone: currentUser?.home_phone,
+    role: currentUser?.role,
+    cell_phone: currentUser?.cell_phone,
     work_phone: currentUser?.work_phone,
     department: currentUser?.department,
     is_active: currentUser?.is_active,
     member_type: currentUser?.member_type,
-    year: currentUser?.year,
+    payment_date: currentUser?.payment_date,
+    join_date: currentUser?.join_date,
   })
   return (
     <>
       <div className="border-b">
         <div className="container w-full mx-auto py-8 px-4">
+          {isAdmin && (
+            <div className="mb-5">
+              <Link
+                href="/admin-dashboard"
+                className="text-white transition-all w-24 duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              >
+                Go Back
+              </Link>
+            </div>
+          )}
           <div className="flex items-center gap-5 flex-wrap">
             <div>
               <h2 className="font-extrabold text-4xl">{`${currentUser?.firstName} ${currentUser?.lastName}`}</h2>

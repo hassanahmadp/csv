@@ -1,12 +1,9 @@
-"use client"
-import { useState, useEffect } from "react"
-import { getAllUsers } from "@/lib"
+import { isDifferenceGreaterThanOneYear } from "@/utils"
 import Link from "next/link"
 import { HashLoader } from "react-spinners"
-import { Loader } from "@/components"
 
 type Props = {
-  loading: boolean,
+  loading: boolean
   allUsers: User[] | undefined
 }
 
@@ -15,46 +12,58 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
     firstName,
     lastName,
     email,
+    suffix,
     premium,
-    address,
+    address1,
+    address2,
     city,
     state,
     zip,
-    home_phone,
+    cell_phone,
     work_phone,
     is_active,
     department,
     member_type,
-    createdAt,
-    year,
+    payment_date,
+    join_date,
+    member_number,
   } = member
 
+  
   const evenOddClassesHandler = (): string => {
     if (idx % 2 === 0) return "bg-white border-b"
     else return "border-b bg-gray-50"
   }
-
-  const joinDate = new Date(createdAt || "")
-
+  
+  const payDate = new Date(payment_date || "")
+  const currentDate = new Date()
+  const diffCheck1year = isDifferenceGreaterThanOneYear(payDate, currentDate)
 
   return (
-    <tr className={evenOddClassesHandler()}>
-      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+    <tr className={`${evenOddClassesHandler()}`}>
+      <td className="px-6 py-4">{member_number >= 0 && member_number}</td>
+      <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
         {`${firstName} ${lastName}`}
       </th>
+      <td className="px-6 py-4">{suffix && suffix}</td>
       <td className="px-6 py-4">{email && email}</td>
-      <td className="px-6 py-4">{premium && `${premium == 'true' ? 'Paid': 'Un Paid'}`}</td>
-      <td className="px-6 py-4">{address && address}</td>
+      <td className="px-6 py-4">{premium && `${premium == "true" ? "Paid" : "Un Paid"}`}</td>
+      <td className="px-6 py-4">{address1 && address1}</td>
+      <td className="px-6 py-4">{address2 && address2}</td>
       <td className="px-6 py-4">{city && city}</td>
       <td className="px-6 py-4">{state && state}</td>
       <td className="px-6 py-4">{zip && zip}</td>
-      <td className="px-6 py-4">{home_phone && home_phone}</td>
+      <td className="px-6 py-4">{cell_phone && cell_phone}</td>
       <td className="px-6 py-4">{work_phone && work_phone}</td>
       <td className="px-6 py-4">{department && department}</td>
       <td className="px-6 py-4">{is_active && is_active}</td>
       <td className="px-6 py-4">{member_type && member_type}</td>
-      <td className="px-6 py-4">{year && year}</td>
-      <td className="px-6 py-4 whitespace-nowrap">{createdAt && joinDate.toDateString()}</td>
+      <td className={`px-6 py-4 whitespace-nowrap ${diffCheck1year && 'text-red-500 font-extrabold'}`}>
+        {payment_date && new Date(payment_date).toDateString()}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        {join_date && new Date(join_date).toDateString()}
+      </td>
       <td className="px-6 py-4">
         <Link
           href={`/admin-dashboard/${member._id}`}
@@ -69,10 +78,7 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
 }
 
 export function DashboardTable({ loading, allUsers }: Props) {
-  
-
-
-  if(loading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[10rem]">
         <HashLoader
@@ -85,14 +91,20 @@ export function DashboardTable({ loading, allUsers }: Props) {
       </div>
     )
   }
-  
+
   if (allUsers) {
     return (
       <table className="w-full text-sm text-left text-gray-500 ">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
           <tr>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
+              Member Number
+            </th>
+            <th scope="col" className="px-6 whitespace-nowrap py-3">
               Name
+            </th>
+            <th scope="col" className="px-6 whitespace-nowrap py-3">
+              Suffix
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
               Email
@@ -101,7 +113,10 @@ export function DashboardTable({ loading, allUsers }: Props) {
               Payment Status
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
-              Address
+              Address Line 1
+            </th>
+            <th scope="col" className="px-6 whitespace-nowrap py-3">
+              Address Line 2
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
               City
@@ -113,7 +128,7 @@ export function DashboardTable({ loading, allUsers }: Props) {
               Zip
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
-              Home Phone
+              Cell Phone
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
               Work Phone
@@ -128,7 +143,7 @@ export function DashboardTable({ loading, allUsers }: Props) {
               Member Type
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
-              Current Year
+              Payment Date
             </th>
             <th scope="col" className="px-6 whitespace-nowrap py-3">
               Join Date

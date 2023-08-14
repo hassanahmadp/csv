@@ -27,29 +27,33 @@ export async function GET(request: NextRequest) {
     const allUsers = await members.find({ role: "USER" })
 
     let allUsersClone: any[] = JSON.parse(JSON.stringify(allUsers)).map((user:User) => ({
+      'Member Number': user?.member_number,
       'First Name': user?.firstName,
       'Last Name': user?.lastName,
+      'Suffix': user?.suffix,
       'Email': user?.email,
-      'Address': user?.address,
+      'Password': user?.password,
+      'Payment Status': user?.premium,
+      'Address 1': user?.address1,
+      'Address 2': user?.address2,
       'City': user?.city,
       'State': user?.state,
       'Zip': user?.zip,
-      'Home Phone': user?.home_phone,
+      'Cell Phone': user?.cell_phone,
       'Work Phone': user?.work_phone,
+      'Active Status': user?.is_active,
       'Department': user?.department,
-      'Status': user?.is_active,
-      // 'Type': user?.member_type,
-      'Payment Status': user?.premium,
-      // 'year': user?.year
+      'Member Type': user?.member_type,
+      'Payment Date': user?.payment_date,
+      'Join Date': user?.join_date,
     }))
 
-    const csvFile = await json2csv(allUsersClone, {excludeKeys: ['_id', '__v', 'password', 'role', 'createdAt', 'updatedAt']})
+    const csvFile = await json2csv(allUsersClone, {excludeKeys: ['_id', '__v', 'role', 'createdAt', 'updatedAt']})
     
     const response = new NextResponse(csvFile)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
     
     response.headers.set("content-type", "application/CSV")
     
-
     return response
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })

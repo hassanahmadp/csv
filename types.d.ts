@@ -18,6 +18,7 @@ interface Admin extends Person {
 
 interface User extends Person, OtherUserInfo {
   role: 'USER';
+  member_number: number;
 }
 
 const IsActive = {
@@ -27,11 +28,12 @@ const IsActive = {
 } as const
 
 interface OtherUserInfo {
-  address?: string
+  address1?: string
+  address2?: string
   city?: string
   state?: string
   zip?: string
-  home_phone?: string
+  cell_phone?: string
   work_phone?: string
   department?: string
   is_active?: "active" | 'deceased' | 'retired' 
@@ -40,7 +42,9 @@ interface OtherUserInfo {
   member_type?: string
   premium?: string
   createdAt?: string
-  year?: string
+  join_date?: string
+  suffix?: string
+  payment_date?: string
 }
 
 interface Token {
@@ -56,15 +60,20 @@ type csvElement = {
   "Last Name": string
   Email: string
   "Payment Status": string
-  Address: string
+  "Suffix": string
+  Address1: string
+  Address2: string
   City: string
   State: string
   Zip: string
-  "Home Phone": string
+  "Cell Phone": string
   "Work Phone": string
   Department: string
   Status: string
   "Member Type": string
-  "Current Year": string
   "Join Date": string
+  "Payment Date": string
+  Password: string
+  Role: string
+  'Member Number': number
 }

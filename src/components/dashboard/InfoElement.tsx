@@ -1,5 +1,6 @@
 "use client"
-import { ChangeEvent, useState } from "react"
+import { usePathname } from "next/navigation"
+import React, { ChangeEvent, useState } from "react"
 type Props = {
   element: [string, any]
 }
@@ -14,6 +15,10 @@ export function InfoElement({ element }: Props) {
   const [inputValue, setInputValue] = useState<string>(element[1])
   const numberTypes = ["zip", "year"]
 
+  const pathname = usePathname()
+
+  let isAdmin: boolean = pathname.split("admin-dashboard").length > 1
+
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
@@ -21,65 +26,70 @@ export function InfoElement({ element }: Props) {
   let title: string = ""
   let InputElement: React.ReactNode
   if (element[0] === "is_active") {
-    title = "Active Status"
-    InputElement = (
-      <div className="flex gap-6 flex-wrap">
-        <div className="flex gap-4">
-          <input
-            type="radio"
-            name="is_active"
-            id="active"
-            checked={inputValue === "active"}
-            value="active"
-            onChange={handleRadioChange}
-          />
-          <label htmlFor="active">Active</label>
+    if (isAdmin) {
+      title = "Active Status"
+      InputElement = (
+        <div className="flex gap-6 flex-wrap">
+          <div className="flex gap-4">
+            <input
+              type="radio"
+              name="is_active"
+              id="active"
+              checked={inputValue === "active"}
+              value="active"
+              onChange={handleRadioChange}
+            />
+            <label htmlFor="active">Active</label>
+          </div>
+          <div className="flex gap-4">
+            <input
+              type="radio"
+              name="is_active"
+              id="retired"
+              checked={inputValue === "retired"}
+              value="retired"
+              onChange={handleRadioChange}
+            />
+            <label htmlFor="retired">Retired</label>
+          </div>
+          <div className="flex gap-4">
+            <input
+              type="radio"
+              name="is_active"
+              id="deceased"
+              checked={inputValue === "deceased"}
+              value="deceased"
+              onChange={handleRadioChange}
+            />
+            <label htmlFor="deceased">Deceased</label>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <input
-            type="radio"
-            name="is_active"
-            id="retired"
-            checked={inputValue === "retired"}
-            value="retired"
-            onChange={handleRadioChange}
-          />
-          <label htmlFor="retired">Retired</label>
-        </div>
-        <div className="flex gap-4">
-          <input
-            type="radio"
-            name="is_active"
-            id="deceased"
-            checked={inputValue === "deceased"}
-            value="deceased"
-            onChange={handleRadioChange}
-          />
-          <label htmlFor="deceased">Deceased</label>
-        </div>
-      </div>
-    )
+      )
+    }
   } else if (element[0] === "premium") {
-    title = "Is Premium User?"
-    InputElement = (
-      <div className="flex gap-4">
-        <input type="text" hidden name="premium" value={inputValue} />
-        <input
-          type="checkbox"
-          id="premium"
-          checked={inputValue === "true"}
-          value={`${inputValue === "true"}`}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            const checkedValue = `${e.target.checked}`
-            setInputValue(checkedValue)
-          }}
-        />
-        <label htmlFor="premium">Premium</label>
-      </div>
-    )
+    if (isAdmin) {
+      title = "Is Paid User?"
+      InputElement = (
+        <div className="flex gap-4">
+          <input type="text" hidden name="premium" value={inputValue} />
+          <input
+            type="checkbox"
+            id="premium"
+            checked={inputValue === "true"}
+            value={`${inputValue === "true"}`}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const checkedValue = `${e.target.checked}`
+              setInputValue(checkedValue)
+            }}
+          />
+          <label htmlFor="premium">Premium</label>
+        </div>
+      )
+    }
   } else if (element[0] === "department") {
     title = "Department"
     let options = [
+      { title: "Select One", value: "" },
       { title: "Amtrak PD", value: "Amtrak PD" },
       { title: "Bay Constable", value: "Bay Constable" },
       { title: "Federal Corrections", value: "Federal Corrections" },
@@ -108,17 +118,17 @@ export function InfoElement({ element }: Props) {
       { title: "SC Sheriff", value: "SC Sheriff" },
       { title: "SCPD ", value: "SCPD " },
       { title: "Village PD Other", value: "Village PD Other" },
+      { title: "Other", value: "Other" },
     ]
     InputElement = (
       <div className="flex gap-4">
         <select
           name="department"
-          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block px-0 py-2.5 "
+          className="bg-gray-50 border max-w-sm w-full border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block px-0 py-2.5 "
           id="department"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
         >
-          <option value="">Select One</option>
           {options.map(option => (
             <option key={option.title} value={option.value}>
               {option.title}
@@ -127,6 +137,63 @@ export function InfoElement({ element }: Props) {
         </select>
       </div>
     )
+  } else if (element[0] === "role") {
+    // title = "Role"
+    // let options = [
+    //   { title: "User", value: "USER" },
+    //   { title: "Admin", value: "ADMIN" },
+    // ]
+    // InputElement = (
+    //   <div className="flex gap-4">
+    //     <select
+    //       name="department"
+    //       className="bg-gray-50 border max-w-4xl w-full border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block px-0 py-2.5 "
+    //       id="department"
+    //       value={inputValue}
+    //       onChange={e => setInputValue(e.target.value)}
+    //     >
+    //       {options.map(option => (
+    //         <option key={option.title} value={option.value}>
+    //           {option.title}
+    //         </option>
+    //       ))}
+    //     </select>
+    //   </div>
+    // )
+  } else if (["join_date", "payment_date"].includes(element[0])) {
+    if (element[0] === "payment_date") {
+      if (isAdmin) {
+        title = "Payment Date"
+        InputElement = (
+          <input
+            type="date"
+            name={element[0]}
+            id={element[0]}
+            placeholder={"Enter " + title}
+            onInput={() => setInputValue("")}
+            defaultValue={
+              inputValue.length > 0 ? new Date(inputValue).toISOString().split("T")[0] : ""
+            }
+            onChange={e => setInputValue(e.target.value)}
+            className="bg-gray-50 border max-w-sm w-full border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
+          />
+        )
+      }
+    } else {
+      title = "Join Date"
+      InputElement = (
+        <input
+          type="date"
+          disabled
+          name={element[0]}
+          id={element[0]}
+          placeholder={"Enter " + title}
+          defaultValue={new Date(inputValue).toISOString().split("T")[0]}
+          onChange={e => setInputValue(e.target.value)}
+          className="bg-gray-50 border max-w-sm w-full border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
+        />
+      )
+    }
   } else {
     if (typeof inputValue !== "boolean") {
       title = capitalize(element[0], "_", " ")
@@ -138,18 +205,20 @@ export function InfoElement({ element }: Props) {
           placeholder={"Enter " + title}
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
-          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
+          className="bg-gray-50 border border-gray-300 max-w-sm w-full text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 "
         />
       )
     }
   }
 
-  return (
-    <div className="flex mb-6 flex-wrap items-start">
-      <label htmlFor={element[0]} className="font-bold text-lg w-full max-w-[15rem] flex-auto">
-        {title}:
-      </label>
-      {InputElement}
-    </div>
-  )
+  if (title) {
+    return (
+      <div className="flex mb-6 flex-wrap items-start">
+        <label htmlFor={element[0]} className="font-bold text-lg w-full max-w-[15rem] flex-auto">
+          {title}:
+        </label>
+        {InputElement}
+      </div>
+    )
+  } else return <React.Fragment></React.Fragment>
 }

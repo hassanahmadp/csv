@@ -8,8 +8,12 @@ type Props = {
 }
 
 export function LoadingButton({ children, loading, buttonProps, loaderProps }: Props) {
+  const allButtonProps = {
+    ...buttonProps,
+    className: `${buttonProps?.className} ${loading && "pointer-events-none"}`,
+  }
   return (
-    <button {...buttonProps}>
+    <button {...allButtonProps}>
       {!loading && children}
       {loading && (
         <HashLoader

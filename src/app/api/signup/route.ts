@@ -21,29 +21,42 @@ export async function POST(request: NextRequest) {
 
     const salt = await bcryptjs.genSalt(10)
     const hashedPassword = await bcryptjs.hash(password, salt)
+    
+    const users: User[] = await members.find({role: "USER"})    
+
+    let member_number: number = 1;
+    
+    if(users.length > 0) {
+      let allUsersParsed = JSON.parse(JSON.stringify(users))
+      member_number= +allUsersParsed[allUsersParsed.length - 1].member_number + 1
+    }
 
     const newMember = new members<User>({
+      member_number,
       firstName,
       lastName,
+      suffix:"",
       email,
       password: hashedPassword,
       role: "USER",
-      address: "",
+      address1: "",
+      address2: "",
       city: "",
       state: "",
       zip: "",
-      home_phone: "",
+      cell_phone: "",
       work_phone: "",
       department: "",
       is_active: "active",
-      group_email: "",
-      member_role: "",
       member_type: "",
-      year: "",
       premium: "false",
+      join_date: new Date().toISOString(),
+      payment_date: ''
     })
 
     const savedMember = await newMember.save()
+
+    console.log({savedMember})
 
     return NextResponse.json({
       message: `User created successfully`,

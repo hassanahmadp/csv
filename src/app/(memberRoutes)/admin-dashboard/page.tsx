@@ -28,11 +28,11 @@ export default function AdminDashboard({}: Props) {
     if(response?.data?.success) {
       toast.success('Data Changed Successfully.')
       getUsers()
-      evt.target.value = ''
     } else {
       toast.error('Something wrong happened while importing csv.')
     }
     setLoading(false)
+    evt.target.value = ''
   }
 
   const handleDownload = async () => {

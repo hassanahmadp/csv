@@ -21,6 +21,10 @@ enum memberRoles {
 
 const MemberSchema = new mongoose.Schema<User>(
   {
+    member_number: {
+      type: Number,
+      required: true
+    },
     firstName: {
       type: String,
       required: [true, "Please provide your First Name"],
@@ -29,6 +33,7 @@ const MemberSchema = new mongoose.Schema<User>(
       type: String,
       required: [true, "Please provide your Last Name"],
     },
+    suffix: String,
     email: {
       type: String,
       required: [true, "Please provide your email"],
@@ -40,28 +45,28 @@ const MemberSchema = new mongoose.Schema<User>(
     },
     role: {
       type: String,
-      required: [true, "Please define your role"],
+      required: true,
       enum: Object.values(memberRoles),
     },
-    address: String,
+    address1: String,
+    address2: String,
     city: String,
     state: String,
     zip: String,
-    home_phone: String,
+    cell_phone: String,
     work_phone: String,
     department: String,
     is_active: {
       type: String,
       enum: Object.values(IsActive),
     },
-    group_email: String,
-    member_role: String,
     member_type: String,
     premium: {
       type: String,
       required: [true, "Please confirm if the User is a Premium member or not."],
     },
-    year: String,
+    join_date: String,
+    payment_date: String,
   },
   { timestamps: true },
 )
