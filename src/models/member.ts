@@ -41,7 +41,6 @@ const MemberSchema = new mongoose.Schema<User>(
     },
     password: {
       type: String,
-      required: [true, "Please provide your password"],
     },
     role: {
       type: String,
