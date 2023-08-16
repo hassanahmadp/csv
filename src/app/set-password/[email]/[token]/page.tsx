@@ -32,7 +32,7 @@ export default async function Page({params}: Props) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center py-8 px-4">
-      <FormContainer variant="set pass" userId={tokenData?.id}/>
+      <FormContainer variant="set pass" through='route' userId={tokenData?.id}/>
     </main>
   )
 }

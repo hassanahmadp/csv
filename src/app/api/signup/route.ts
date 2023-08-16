@@ -2,6 +2,8 @@ import { connect } from "@/dbConfig/dbConfig"
 import members from "@/models/member"
 import { NextRequest, NextResponse } from "next/server"
 import bcryptjs from "bcryptjs"
+import { sendMailToUser } from "@/helpers"
+import jwt from "jsonwebtoken"
 
 connect()
 
@@ -11,6 +13,26 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody: User = await request.json()
     const { firstName, lastName, email, password } = reqBody
+
+    if(password.length <= 0) {
+      // const tokenData: Token = {
+      //   name: `${firstName} ${lastName}`,
+      //   email,
+      // }
+
+      // const newSecret = process.env.JWT_SECRET_KEY 
+
+      // const newUserToken = await jwt.sign(tokenData, newSecret, {
+      //   expiresIn: "10m",
+      // })
+
+      // const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
+      await sendMailToUser({email,firstName},"")
+      return NextResponse.json({
+        message: `User created successfully`,
+        success: true,
+      })
+    }
 
     // @ts-ignore
     const member: User = await members.findOne({ email })
@@ -55,8 +77,6 @@ export async function POST(request: NextRequest) {
     })
 
     const savedMember = await newMember.save()
-
-    console.log({savedMember})
 
     return NextResponse.json({
       message: `User created successfully`,

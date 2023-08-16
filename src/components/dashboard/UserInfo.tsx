@@ -39,7 +39,6 @@ export function UserInfo({ variant = "current", userId }: Props) {
     }
 
     setLoading(false)
-    console.log(values)
   }
 
   const keyDownHandler = (evt: React.KeyboardEvent<HTMLFormElement>) => {

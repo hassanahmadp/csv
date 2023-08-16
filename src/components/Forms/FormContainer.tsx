@@ -1,21 +1,21 @@
-"use client"
-import React, { useEffect, useState } from "react"
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { changePassword, getAllUsers, logIn, logout, setPasswordOfUser, signUp } from "@/lib"
-import toast from "react-hot-toast"
-import { LoadingButton } from "../General"
+"use client";
+import React, { useEffect, useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { changePassword, getAllUsers, logIn, logout, setPasswordOfUser, signUp } from "@/lib";
+import toast from "react-hot-toast";
+import { LoadingButton } from "../General";
 
 type Props = {
-  variant: "login" | "sign up" | "set pass" | "change pass"
-  through?: "route" | "modal"
-  setShowModal?: any
-  userId?: string | number
-}
+  variant: "login" | "sign up" | "set pass" | "change pass";
+  through?: "route" | "modal";
+  setShowModal?: any;
+  userId?: string | number;
+};
 
 function LoginForm({ loading }: { loading: boolean }) {
-  const [showPass, setShowPass] = useState<boolean>(false)
+  const [showPass, setShowPass] = useState<boolean>(false);
 
   return (
     <div className="p-6">
@@ -76,17 +76,17 @@ function LoginForm({ loading }: { loading: boolean }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export function SignUpForm({
   through,
   loading,
 }: {
-  through?: "route" | "modal"
-  loading: boolean
+  through?: "route" | "modal";
+  loading: boolean;
 }) {
-  const [showPass, setShowPass] = useState<boolean>(false)
+  const [showPass, setShowPass] = useState<boolean>(false);
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
@@ -133,6 +133,7 @@ export function SignUpForm({
             autoComplete="email"
           />
         </div>
+        {/* {through === "modal" &&  */}
         <div className=" relative">
           <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">
             Password
@@ -152,6 +153,7 @@ export function SignUpForm({
             {!showPass ? <AiFillEye fontSize="22" /> : <AiFillEyeInvisible fontSize="22" />}
           </div>
         </div>
+        {/* } */}
 
         <LoadingButton
           loading={loading}
@@ -174,16 +176,16 @@ export function SignUpForm({
         )}
       </div>
     </div>
-  )
+  );
 }
 export function SetPasswordForm({
   through,
   loading,
 }: {
-  through?: "route" | "modal"
-  loading: boolean
+  through?: "route" | "modal";
+  loading: boolean;
 }) {
-  const [showPass, setShowPass] = useState<boolean>(false)
+  const [showPass, setShowPass] = useState<boolean>(false);
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
@@ -213,7 +215,7 @@ export function SetPasswordForm({
         <LoadingButton
           loading={loading}
           buttonProps={{
-            color:'#000',
+            color: "#000",
             type: "submit",
             className:
               "w-full relative text-white transition-all duration-150 bg-black border border-black hover focus:outline-transparent font-medium rounded-lg text-sm px-5 py-2.5 text-center",
@@ -223,22 +225,22 @@ export function SetPasswordForm({
         </LoadingButton>
       </div>
     </div>
-  )
+  );
 }
 export function ChangePasswordForm({
   through,
   loading,
 }: {
-  through?: "route" | "modal"
-  loading: boolean
+  through?: "route" | "modal";
+  loading: boolean;
 }) {
   const [showPass, setShowPass] = useState<{
-    oldPass: boolean
-    newPass: boolean
+    oldPass: boolean;
+    newPass: boolean;
   }>({
     oldPass: false,
     newPass: false,
-  })
+  });
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
@@ -319,7 +321,7 @@ export function ChangePasswordForm({
         </LoadingButton>
       </div>
     </div>
-  )
+  );
 }
 
 export function FormContainer({
@@ -328,135 +330,129 @@ export function FormContainer({
   setShowModal,
   userId,
 }: Props) {
-  const [error, setError] = useState<string>("")
-  const router = useRouter()
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>("");
+  const router = useRouter();
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setButtonLoading(true)
+    event.preventDefault();
+    setButtonLoading(true);
 
     try {
-      const target = event.target as HTMLFormElement
-      const formData = new FormData(target)
-      const obj: { [key: string]: string } = {}
+      const target = event.target as HTMLFormElement;
+      const formData = new FormData(target);
+      const obj: { [key: string]: string } = {};
       formData.forEach((value, key) => {
         if (value instanceof File) {
         } else {
-          obj[key] = value.toString()
+          obj[key] = value.toString();
         }
-      })
+      });
 
-      const { email, password } = obj
+      const { email, password } = obj;
 
-      const response: any = await logIn({ email, password })
+      const response: any = await logIn({ email, password });
 
       if (!response) {
-        setError("Invalid Email or Password")
+        setError("Invalid Email or Password");
       } else {
-        toast.success("Login Successful!")
-        if (response?.data?.role === "ADMIN") router.push("/admin-dashboard")
-        else if (response?.data?.role === "USER") router.push("/dashboard")
+        toast.success("Login Successful!");
+        if (response?.data?.role === "ADMIN") router.push("/admin-dashboard");
+        else if (response?.data?.role === "USER") router.push("/dashboard");
         else {
         }
       }
-      setButtonLoading(false)
+      setButtonLoading(false);
     } catch (error: any) {
-      setButtonLoading(false)
-      console.error({ error: error.message })
-      toast.error(error.message)
+      setButtonLoading(false);
+      console.error({ error: error.message });
+      toast.error(error.message);
     }
-  }
+  };
 
   const handleSignUpSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setButtonLoading(true)
+    event.preventDefault();
+    setButtonLoading(true);
 
     try {
-      const target = event.target as HTMLFormElement
-      const formData = new FormData(target)
-      const data = Object.fromEntries(formData.entries())
-      const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data))
-      await signUp({ firstName, lastName, email, password })
-      toast.success("Signup Successful.")
-      through === "route" && router.push("/")
-      through === "modal" && setShowModal(false)
+      const target = event.target as HTMLFormElement;
+      const formData = new FormData(target);
+      const data = Object.fromEntries(formData.entries());
+      const { firstName, lastName, email, password } = JSON.parse(JSON.stringify(data));
+      await signUp({ firstName, lastName, email, password });
+      toast.success("Signup Successful.");
+      through === "route" && router.push("/");
+      through === "modal" && setShowModal(false);
     } catch (error: any) {
-      setButtonLoading(false)
-      console.error({ error: error.message })
+      setButtonLoading(false);
+      console.error({ error: error.message });
     }
-  }
+  };
 
   const handleSetPassSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setButtonLoading(true)
+    event.preventDefault();
+    setButtonLoading(true);
 
     try {
-      const target = event.target as HTMLFormElement
-      const formData = new FormData(target)
-      const formDataValues = Object.fromEntries(formData.entries())
-      const data = JSON.parse(JSON.stringify(formDataValues))
-      console.log(userId)
+      const target = event.target as HTMLFormElement;
+      const formData = new FormData(target);
+      const formDataValues = Object.fromEntries(formData.entries());
+      const data = JSON.parse(JSON.stringify(formDataValues));
+      console.log(userId);
 
-      // await signUp({ firstName, lastName, email, password })
-      // toast.success("Signup Successful.")
-      // through === "route" && router.push("/")
-      // through === "modal" && setShowModal(false)
-      //
-      //
-      const response = await setPasswordOfUser(`${userId}`, data)
+      const response = await setPasswordOfUser(`${userId}`, data);
       if (response?.data.success) {
-        toast.success("Password has been set successfully.")
-        setShowModal(false)
+        toast.success("Password has been set successfully.");
+        setShowModal && setShowModal(false);
+        if (through === "route") {
+          await logout();
+          router.push("/");
+        }
       } else {
-        setButtonLoading(false)
-        toast.error("There is some issue in setting the password")
-      }
-      if(through === 'route') {
-        await logout()
-        router.push('/')
+        setButtonLoading(false);
+        toast.error("There is some issue in setting the password");
       }
     } catch (error: any) {
-      setButtonLoading(false)
-      console.error({ error: error.message })
+      setButtonLoading(false);
+      console.error({ error: error.message });
     }
-  }
+  };
   const handleChangePassSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setButtonLoading(true)
+    event.preventDefault();
+    setButtonLoading(true);
 
     try {
-      const target = event.target as HTMLFormElement
-      const formData = new FormData(target)
-      const data = Object.fromEntries(formData.entries())
+      const target = event.target as HTMLFormElement;
+      const formData = new FormData(target);
+      const data = Object.fromEntries(formData.entries());
 
-      const { oldPassword, newPassword } = JSON.parse(JSON.stringify(data))
+      const { oldPassword, newPassword } = JSON.parse(JSON.stringify(data));
 
       const response = await changePassword(`${userId}`, {
         oldPass: oldPassword,
         newPass: newPassword,
-      })
+      });
 
       if (response?.data?.success) {
-        toast.success("Password Successfully Changed")
-        setShowModal(false)
+        toast.success("Password Successfully Changed");
+        setShowModal(false);
       } else {
-        throw new Error(response?.data?.message)
+        throw new Error(response?.data?.message);
       }
     } catch (error: any) {
-      setButtonLoading(false)
-      console.error({ error: error.message })
+      setButtonLoading(false);
+      console.error({ error: error.message });
     }
-  }
+  };
 
   useEffect(() => {
-    if (error) toast.error(error)
-  }, [error])
+    if (error) toast.error(error);
+  }, [error]);
 
   return (
     <form
       onSubmit={
-           variant === "login"
+        variant === "login"
           ? handleSubmit
           : variant === "sign up"
           ? handleSignUpSubmit
@@ -465,8 +461,8 @@ export function FormContainer({
           : variant === "change pass"
           ? handleChangePassSubmit
           : e => {
-              e.preventDefault()
-              console.error({ error: `${variant} type of form not available` })
+              e.preventDefault();
+              console.error({ error: `${variant} type of form not available` });
             }
       }
       className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 "
@@ -478,5 +474,5 @@ export function FormContainer({
         <ChangePasswordForm loading={buttonLoading} through={through} />
       )}
     </form>
-  )
+  );
 }

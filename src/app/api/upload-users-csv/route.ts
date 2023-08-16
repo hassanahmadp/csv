@@ -12,7 +12,6 @@ export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
-    debugger
     const token = request.cookies.get("token")?.value || ""
 
     const { role } = await getDataFromToken(token)
@@ -108,7 +107,7 @@ export async function POST(request: NextRequest) {
 
       const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
       
-      await sendMailToUser(user, link)
+      await sendMailToUser({email: user.email, firstName: user.firstName}, link)
     }
     
     return NextResponse.json({ success: true, message: "Users inserted successfully" })
