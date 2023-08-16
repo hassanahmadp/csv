@@ -89,25 +89,27 @@ export async function POST(request: NextRequest) {
 
     await Members.insertMany([...newMembers])
 
-    // const allUsers: User[] = await Members.find({ role: "USER" })
+    const allUsers: User[] = await Members.find({ role: "USER" })
 
-    // for (const user of allUsers) {
-    //   const tokenData: Token = {
-    //     id: user?._id,
-    //     name: `${user?.firstName} ${user?.lastName}`,
-    //     email: user?.email,
-    //   }
+    for (const user of allUsers) {
+      if(user.password.length > 0) continue
 
-    //   const newSecret = process.env.JWT_SECRET_KEY + user?.password
+      const tokenData: Token = {
+        id: user?._id,
+        name: `${user?.firstName} ${user?.lastName}`,
+        email: user?.email,
+      }
 
-    //   const newUserToken = await jwt.sign(tokenData, newSecret, {
-    //     expiresIn: "10m",
-    //   })
+      const newSecret = process.env.JWT_SECRET_KEY + user?.password
 
-    //   const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
+      const newUserToken = await jwt.sign(tokenData, newSecret, {
+        expiresIn: "10m",
+      })
+
+      const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
       
-    //   await sendMailToUser(user, link)
-    // }
+      await sendMailToUser(user, link)
+    }
     
     return NextResponse.json({ success: true, message: "Users inserted successfully" })
   } catch (error: any) {
