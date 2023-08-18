@@ -55,6 +55,7 @@ const MemberSchema = new mongoose.Schema<User>(
     cell_phone: String,
     work_phone: String,
     department: String,
+    otherDepartment: String,
     is_active: {
       type: String,
       enum: Object.values(IsActive),

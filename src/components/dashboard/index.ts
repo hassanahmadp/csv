@@ -1,2 +1,2 @@
-export * from "./InfoElement"
 export * from "./UserInfo"
+export * from "./InfoForm"

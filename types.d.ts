@@ -27,25 +27,6 @@ const IsActive = {
   "retired":"retired"
 } as const
 
-interface OtherUserInfo {
-  address1?: string
-  address2?: string
-  city?: string
-  state?: string
-  zip?: string
-  cell_phone?: string
-  work_phone?: string
-  department?: string
-  is_active?: "active" | 'deceased' | 'retired' 
-  group_email?: string
-  member_role?: string
-  member_type?: string
-  premium?: string
-  createdAt?: string
-  join_date?: string
-  suffix?: string
-  payment_date?: string
-}
 
 interface Token {
   id: string | number | undefined,
@@ -76,4 +57,27 @@ type csvElement = {
   Password: string
   Role: string
   'Member Number': number
+}
+
+interface EditFormValues {
+  is_active?: string
+  premium?: string
+  suffix?: string
+  address1?: string
+  address2?: string
+  city?: string
+  state?: string
+  zip?: string
+  cell_phone?: string
+  work_phone?: string
+  department?: string
+  otherDepartment?: string
+  member_type?: string
+  payment_date?: string
+  join_date?: string
+}
+
+
+interface OtherUserInfo extends EditFormValues {
+  createdAt?: string
 }

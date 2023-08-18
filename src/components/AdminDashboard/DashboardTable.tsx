@@ -23,6 +23,7 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
     work_phone,
     is_active,
     department,
+    otherDepartment,
     member_type,
     payment_date,
     join_date,
@@ -38,6 +39,10 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
   const payDate = new Date(payment_date || "")
   const currentDate = new Date()
   const diffCheck1year = isDifferenceGreaterThanOneYear(payDate, currentDate)
+
+  let departmentValue: string | undefined = ""
+  if(department !== "Other") departmentValue = department
+  else departmentValue = otherDepartment
 
   return (
     <tr className={`${evenOddClassesHandler()}`}>
@@ -55,7 +60,8 @@ const MemberRow = ({ member, idx }: { member: User; idx: number }) => {
       <td className="px-6 py-4">{zip && zip}</td>
       <td className="px-6 py-4">{cell_phone && cell_phone}</td>
       <td className="px-6 py-4">{work_phone && work_phone}</td>
-      <td className="px-6 py-4">{department && department}</td>
+      {/* <td className="px-6 py-4">{department && department === "Other" && otherDepartment && otherDepartment}</td> */}
+      <td className="px-6 py-4">{departmentValue && departmentValue}</td>
       <td className="px-6 py-4">{is_active && is_active}</td>
       <td className="px-6 py-4">{member_type && member_type}</td>
       <td className={`px-6 py-4 whitespace-nowrap ${diffCheck1year && 'text-red-500 font-extrabold'}`}>

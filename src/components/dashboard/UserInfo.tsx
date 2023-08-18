@@ -1,10 +1,9 @@
 "use client"
-import { FormContainer, InfoElement, Loader, LoadingButton, Modal } from "@/components"
+import { FormContainer, InfoForm, Loader, LoadingButton, Modal } from "@/components"
 import { getCurrentUser, getUser, updateUserData } from "@/lib"
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { usePathname } from "next/navigation"
-import { HashLoader } from "react-spinners"
 import toast from "react-hot-toast"
 import Link from "next/link"
 
@@ -13,10 +12,29 @@ type Props = {
   userId?: string
 }
 
+const defaultUserValues: EditFormValues = {
+  is_active: "active",
+  premium: "false",
+  suffix: "",
+  address1: "",
+  address2: "",
+  city: "",
+  state: "",
+  zip: "",
+  cell_phone: "",
+  work_phone: "",
+  department: "",
+  otherDepartment: "",
+  member_type: "",
+  payment_date: "",
+  join_date: "",
+} as const
+
 export function UserInfo({ variant = "current", userId }: Props) {
   const [currentUser, setCurrentUser] = useState<User | undefined>(undefined)
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [formValues, setFormValues] = useState<EditFormValues>(defaultUserValues)
 
   const pathname = usePathname()
 
@@ -25,6 +43,10 @@ export function UserInfo({ variant = "current", userId }: Props) {
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
     setLoading(true)
+
+    if(formValues.department !== "Other") {
+      setFormValues(prev => ({...prev, otherDepartment: ""}))
+    }
 
     const target = evt.target as HTMLFormElement
     const formData = new FormData(target)
@@ -58,6 +80,23 @@ export function UserInfo({ variant = "current", userId }: Props) {
         user = await getUser(userId || "")
       }
       setCurrentUser(user)
+      setFormValues({
+        is_active: user?.is_active,
+        premium: user?.premium,
+        suffix: user?.suffix,
+        address1: user?.address1,
+        address2: user?.address2,
+        city: user?.city,
+        state: user?.state,
+        zip: user?.zip,
+        cell_phone: user?.cell_phone,
+        work_phone: user?.work_phone,
+        department: user?.department,
+        otherDepartment: user?.otherDepartment,
+        member_type: user?.member_type,
+        payment_date: user?.payment_date,
+        join_date: user?.join_date,
+      })
     }
     fetchCurrentUser()
   }, [])
@@ -66,23 +105,6 @@ export function UserInfo({ variant = "current", userId }: Props) {
     return <Loader />
   }
 
-  let userInfoKeyValuePair = Object.entries({
-    premium: currentUser?.premium,
-    suffix: currentUser?.suffix,
-    address1: currentUser?.address1,
-    address2: currentUser?.address2,
-    city: currentUser?.city,
-    state: currentUser?.state,
-    zip: currentUser?.zip,
-    role: currentUser?.role,
-    cell_phone: currentUser?.cell_phone,
-    work_phone: currentUser?.work_phone,
-    department: currentUser?.department,
-    is_active: currentUser?.is_active,
-    member_type: currentUser?.member_type,
-    payment_date: currentUser?.payment_date,
-    join_date: currentUser?.join_date,
-  })
   return (
     <>
       <div className="border-b">
@@ -119,9 +141,7 @@ export function UserInfo({ variant = "current", userId }: Props) {
         onKeyDown={keyDownHandler}
         onSubmit={handleSubmit}
       >
-        {userInfoKeyValuePair?.map(el => {
-          return <InfoElement key={el[0]} element={el} />
-        })}
+        <InfoForm inputValues={formValues} setInputValues={setFormValues} />
         <LoadingButton
           loading={loading}
           buttonProps={{
