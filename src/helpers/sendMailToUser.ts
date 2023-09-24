@@ -32,6 +32,7 @@ export async function sendMailToUser(user:{email:string, firstName: string}, lin
     console.log(`Email sent to ${user.email}`);
   } catch (error) {
     console.error("Error sending email:", error);
+    throw new Error(JSON.stringify(error))
   }
 }
 

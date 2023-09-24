@@ -62,7 +62,7 @@ let departmentOptions = [
 export function InfoForm({ inputValues, setInputValues }: Props) {
   const pathname = usePathname()
 
-  debugger
+  
   let isAdmin: boolean = pathname.split("admin-dashboard").length > 1
 
   const handleChange =
