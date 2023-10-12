@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       // })
 
       // const link: string = `${urlData.protocol}//${urlData.host}/set-password/${user.email}/${newUserToken}`
-      await sendMailToUser({email,firstName},"")
+      // await sendMailToUser({email,firstName},"")
       return NextResponse.json({
         message: `User created successfully`,
         success: true,

@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       await sendMailToUser({email: user.email, firstName: user.firstName}, link)
     }
     
-    return NextResponse.json({ success: true, message: "Users inserted successfully" })
+    return NextResponse.json({ success: `true ${Math.random()}`, message: "Users inserted successfully" })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

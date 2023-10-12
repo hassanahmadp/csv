@@ -11,6 +11,7 @@ const transporter = nodemailer.createTransport({
 
 export async function sendMailToUser(user:{email:string, firstName: string}, link: string) {
   const subject = "Email to set password";
+  debugger
   const body = `Dear ${user.firstName},\n\nWelcome to our website! To set a password, click on the link. ${link}\n\nBest regards,\nThe Website Team`;
 
   try {
@@ -35,38 +36,3 @@ export async function sendMailToUser(user:{email:string, firstName: string}, lin
     throw new Error(JSON.stringify(error))
   }
 }
-
-/**
- * 
-Drop Down for Agency.  Use other and allow them to type in.
-
-Amtrak PD
-Bay Constable
-Federal Corrections
-Freeport PD
-Hempstead PD
-Long Beach PD
-Lynbrook PD
-Malvern PD
-NC DA Squad
-NC Probation
-NC Sheriff
-NCPD 
-NYC DOC
-NYC Sanitation Police
-NYC Sheriff
-NYPD
-NYS Court Officers 
-NYS Trooper
-Out of State Corrections
-Out of State Other
-Out of State Police
-Out of State Sherriff 
-Postal Police 
-Quogue PD
-RVC Police 
-SC Sheriff
-SCPD 
-Village PD Other
- * 
- */
