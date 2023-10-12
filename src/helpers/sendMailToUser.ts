@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
 
 export async function sendMailToUser(user:{email:string, firstName: string}, link: string) {
   const subject = "Email to set password";
-  debugger
   const body = `Dear ${user.firstName},\n\nWelcome to our website! To set a password, click on the link. ${link}\n\nBest regards,\nThe Website Team`;
 
   try {
