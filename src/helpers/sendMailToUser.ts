@@ -22,7 +22,7 @@ export async function sendMailToUser(user:{email:string, firstName: string}, lin
       text: body,
     };
 
-    await transporter.sendMail(mailOptions, (error, info) => {
+    await transporter.sendMail({...mailOptions}, (error, info) => {
       if (error) {
         console.error("Error sending email:", error);
       } else {
